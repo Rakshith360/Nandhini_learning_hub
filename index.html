@@ -1150,126 +1150,834 @@
         // Enhanced Question Bank to Reduce Repetition
         const quizData = {
             "First Year": {
-                "Mechanics & Gravitation": [
-                    {
-                        template: (r) => {
-                            const m = r(2, 10); const a = r(2, 5);
-                            return {
-                                q: `What is the force required to accelerate a ${m}kg mass at ${a}m/s²?`,
-                                opts: [`${m*a} N`, `${m+a} N`, `${m/a} N`, `${m*a*2} N`],
-                                ans: 0,
-                                exp: `Newton's Second Law: F = ma. ${m} * ${a} = ${m*a} N.`
-                            }
-                        }
-                    },
-                    {
-                        template: (r) => {
-                            return {
-                                q: `If the distance between two masses is doubled, the gravitational force between them becomes:`,
-                                opts: [`Four times`, `Doubled`, `One-fourth`, `Halved`],
-                                ans: 2,
-                                exp: `Gravitational force is inversely proportional to the square of the distance ($F \\propto 1/r^2$).`
-                            }
-                        }
-                    },
-                    {
-                         template: (r) => {
-                             const u = r(10, 20); const t = r(2, 5);
-                             return {
-                                 q: `A particle starts with velocity ${u} m/s and moves with constant acceleration a=2m/s². What is velocity after ${t}s?`,
-                                 opts: [`${u + 2*t} m/s`, `${u - 2*t} m/s`, `${u*t} m/s`, `${u/t} m/s`],
-                                 ans: 0,
-                                 exp: `v = u + at. v = ${u} + (2*${t}) = ${u + 2*t} m/s.`
-                             }
-                         }
-                    },
-                    {
-                        template: (r) => {
-                            return {
-                                q: "Kepler's Second Law states that the line joining the planet to the Sun sweeps out equal ______ in equal intervals of time.",
-                                opts: ["Distances", "Areas", "Volumes", "Angles"],
-                                ans: 1,
-                                exp: "Kepler's Second Law is also known as the Law of Areas, based on conservation of angular momentum."
-                            }
-                        }
-                    },
-                    {
-                        template: (r) => {
-                            return {
-                                q: "Which of the following is a scalar quantity?",
-                                opts: ["Velocity", "Force", "Displacement", "Speed"],
-                                ans: 3,
-                                exp: "Speed has magnitude but no direction, making it a scalar. The others are vectors."
-                            }
-                        }
+                 "Mechanics & Gravitation": [
+            // --- Existing & Basic ---
+            {
+                template: (r) => {
+                    const m = r(2, 10); const a = r(2, 5);
+                    return {
+                        q: `What is the force required to accelerate a ${m}kg mass at ${a}m/s²?`,
+                        opts: [`${m * a} N`, `${m + a} N`, `${m / a} N`, `${m * a * 2} N`],
+                        ans: 0,
+                        exp: `Newton's Second Law: F = ma. ${m} * ${a} = ${m * a} N.`
                     }
-                ],
-                "Calculus & Limits": [
-                    {
-                        template: (r) => {
-                            return {
-                                q: "What is the limit of sin(x)/x as x approaches 0?",
-                                opts: ["0", "1", "Infinity", "Undefined"],
-                                ans: 1,
-                                exp: "This is a standard limit theorem: lim(x->0) sin(x)/x = 1."
-                            }
-                        }
-                    },
-                    {
-                        template: (r) => {
-                             const n = r(2, 5);
-                             return {
-                                 q: `What is the derivative of x^${n} with respect to x?`,
-                                 opts: [`${n}x^${n-1}`, `x^${n+1}/${n+1}`, `${n}x`, `${n-1}x^${n}`],
-                                 ans: 0,
-                                 exp: `The power rule states d/dx(x^n) = nx^(n-1).`
-                             }
-                        }
-                    },
-                    {
-                        template: (r) => {
-                            return {
-                                q: "If f(x) = ln(x), what is f'(x)?",
-                                opts: ["e^x", "1/x", "x", "ln(x^2)"],
-                                ans: 1,
-                                exp: "The derivative of natural log ln(x) is 1/x."
-                            }
-                        }
-                    }
-                ],
-                "Basic Chemistry": [
-                    {
-                        template: (r) => {
-                            return {
-                                q: "Which quantum number describes the shape of an orbital?",
-                                opts: ["Principal (n)", "Azimuthal (l)", "Magnetic (m)", "Spin (s)"],
-                                ans: 1,
-                                exp: "The Azimuthal quantum number (l) determines the orbital angular momentum and the shape (s, p, d, f)."
-                            }
-                        }
-                    },
-                    {
-                        template: (r) => {
-                            return {
-                                q: "According to Boyle's Law, at constant temperature, pressure is inversely proportional to:",
-                                opts: ["Volume", "Mass", "Density", "Energy"],
-                                ans: 0,
-                                exp: "Boyle's Law: P ∝ 1/V when T is constant."
-                            }
-                        }
-                    },
-                    {
-                        template: (r) => {
-                            return {
-                                q: "Which element has the highest electronegativity?",
-                                opts: ["Oxygen", "Chlorine", "Fluorine", "Nitrogen"],
-                                ans: 2,
-                                exp: "Fluorine is the most electronegative element on the periodic table."
-                            }
-                        }
-                    }
-                ]
+                }
             },
+            {
+                template: (r) => {
+                    return {
+                        q: `If the distance between two masses is doubled, the gravitational force between them becomes:`,
+                        opts: [`Four times`, `Doubled`, `One-fourth`, `Halved`],
+                        ans: 2,
+                        exp: `Gravitational force is inversely proportional to the square of the distance ($F \\propto 1/r^2$).`
+                    }
+                }
+            },
+            {
+                template: (r) => {
+                    const u = r(10, 20); const t = r(2, 5);
+                    return {
+                        q: `A particle starts with velocity ${u} m/s and moves with constant acceleration a=2m/s². What is velocity after ${t}s?`,
+                        opts: [`${u + 2 * t} m/s`, `${u - 2 * t} m/s`, `${u * t} m/s`, `${u / t} m/s`],
+                        ans: 0,
+                        exp: `v = u + at. v = ${u} + (2*${t}) = ${u + 2 * t} m/s.`
+                    }
+                }
+            },
+            // --- Kinematics ---
+            {
+                template: (r) => {
+                    const u = r(20, 50); const g = 10;
+                    return {
+                        q: `A ball is thrown vertically upward with a speed of ${u} m/s. Taking g=10m/s², how long does it take to reach maximum height?`,
+                        opts: [`${u / g} s`, `${u * g} s`, `${(u / g) * 2} s`, `${u + g} s`],
+                        ans: 0,
+                        exp: `At max height, v=0. Using v = u - gt: 0 = ${u} - 10t => t = ${u / 10} s.`
+                    }
+                }
+            },
+            {
+                template: (r) => {
+                    const v = r(10, 30); const r_path = r(5, 20);
+                    return {
+                        q: `A car moves in a circle of radius ${r_path} m with a constant speed of ${v} m/s. What is its centripetal acceleration?`,
+                        opts: [`${(v * v / r_path).toFixed(1)} m/s²`, `${(v / r_path).toFixed(1)} m/s²`, `${(v * r_path).toFixed(1)} m/s²`, `${(r_path / v).toFixed(1)} m/s²`],
+                        ans: 0,
+                        exp: `Centripetal acceleration a_c = v²/r. (${v}*${v})/${r_path} = ${(v * v / r_path).toFixed(1)}.`
+                    }
+                }
+            },
+            // --- Dynamics ---
+            {
+                template: (r) => {
+                    const mass = r(5, 15); const g = 10;
+                    return {
+                        q: `What is the weight of a ${mass} kg object on Earth (g=10m/s²)?`,
+                        opts: [`${mass * g} N`, `${mass} N`, `${mass / g} N`, `${mass + g} N`],
+                        ans: 0,
+                        exp: `Weight W = mg = ${mass} * 10 = ${mass * 10} N.`
+                    }
+                }
+            },
+            {
+                template: (r) => {
+                    const mu = 0.5; const N = r(10, 40) * 10; // Normal force
+                    return {
+                        q: `A block has a normal force of ${N} N. If the coefficient of kinetic friction is 0.5, what is the frictional force?`,
+                        opts: [`${0.5 * N} N`, `${N} N`, `${2 * N} N`, `${N / 4} N`],
+                        ans: 0,
+                        exp: `Friction f_k = μ_k * N = 0.5 * ${N} = ${0.5 * N} N.`
+                    }
+                }
+            },
+            {
+                template: (r) => {
+                    const m1 = r(2, 5); const v1 = r(4, 8);
+                    return {
+                        q: `A ${m1}kg ball moving at ${v1}m/s collides with a stationary ball of the same mass and sticks to it. What is the final velocity?`,
+                        opts: [`${v1 / 2} m/s`, `${v1} m/s`, `${v1 * 2} m/s`, `0 m/s`],
+                        ans: 0,
+                        exp: `Conservation of Momentum: m1v1 = (m1+m2)v_final. Since m1=m2, v_final = v1/2.`
+                    }
+                }
+            },
+            // --- Work, Energy, Power ---
+            {
+                template: (r) => {
+                    const m = r(2, 8); const v = r(3, 10);
+                    return {
+                        q: `Calculate the kinetic energy of a body of mass ${m} kg moving with a velocity of ${v} m/s.`,
+                        opts: [`${0.5 * m * v * v} J`, `${m * v} J`, `${m * v * v} J`, `${0.5 * m * v} J`],
+                        ans: 0,
+                        exp: `KE = 1/2 mv². 0.5 * ${m} * ${v}^2 = ${0.5 * m * v * v} J.`
+                    }
+                }
+            },
+            {
+                template: (r) => {
+                    const h = r(10, 50);
+                    return {
+                        q: `An object is dropped from ${h}m. Taking g=10m/s², what is its potential energy per unit mass at the top?`,
+                        opts: [`${10 * h} J/kg`, `${h} J/kg`, `${100 * h} J/kg`, `${h / 10} J/kg`],
+                        ans: 0,
+                        exp: `PE/m = gh = 10 * ${h} = ${10 * h} J/kg.`
+                    }
+                }
+            },
+            {
+                template: (r) => {
+                    const F = r(10, 50); const d = r(2, 10);
+                    return {
+                        q: `A force of ${F} N moves a box ${d} m in the direction of the force. Work done is:`,
+                        opts: [`${F * d} J`, `${F / d} J`, `${F + d} J`, `${F - d} J`],
+                        ans: 0,
+                        exp: `Work W = F * d = ${F} * ${d} = ${F * d} J.`
+                    }
+                }
+            },
+            {
+                template: (r) => {
+                    const W = r(100, 500); const t = r(5, 20);
+                    return {
+                        q: `A machine does ${W} J of work in ${t} seconds. What is its power output?`,
+                        opts: [`${(W / t).toFixed(1)} W`, `${W * t} W`, `${W + t} W`, `${(t / W).toFixed(3)} W`],
+                        ans: 0,
+                        exp: `Power P = Work/time = ${W}/${t} = ${(W / t).toFixed(1)} Watts.`
+                    }
+                }
+            },
+             // --- Rotational Motion ---
+            {
+                template: (r) => {
+                    return {
+                        q: "Which quantity in rotational motion is analogous to mass in linear motion?",
+                        opts: ["Moment of Inertia", "Torque", "Angular Velocity", "Angular Momentum"],
+                        ans: 0,
+                        exp: "Moment of Inertia resists changes in rotational motion, just as mass resists changes in linear motion."
+                    }
+                }
+            },
+            {
+                template: (r) => {
+                    const F = r(5, 20); const r_arm = r(2, 10);
+                    return {
+                        q: `A force of ${F} N is applied perpendicularly to a wrench of length ${r_arm} m. What is the torque?`,
+                        opts: [`${F * r_arm} Nm`, `${F / r_arm} Nm`, `${F + r_arm} Nm`, `${r_arm / F} Nm`],
+                        ans: 0,
+                        exp: `Torque τ = rF sin(90°) = ${r_arm} * ${F} = ${F * r_arm} Nm.`
+                    }
+                }
+            },
+            // --- Gravitation ---
+            {
+                template: (r) => {
+                    return {
+                        q: "What is the value of the escape velocity from Earth's surface?",
+                        opts: ["11.2 km/s", "8.0 km/s", "3.0 x 10^8 m/s", "9.8 m/s"],
+                        ans: 0,
+                        exp: "The escape velocity for Earth is approximately 11.2 km/s."
+                    }
+                }
+            },
+            {
+                template: (r) => {
+                    return {
+                        q: "Kepler's Third Law states that the square of the orbital period is proportional to:",
+                        opts: ["Cube of the semi-major axis", "Square of the radius", "Mass of the planet", "Inverse of distance"],
+                        ans: 0,
+                        exp: "T² ∝ r³ (Square of period is proportional to cube of the semi-major axis)."
+                    }
+                }
+            },
+            {
+                template: (r) => {
+                    return {
+                        q: "Where is the gravitational potential energy of an object maximum?",
+                        opts: ["At infinity", "At the Earth's surface", "At the center of the Earth", "At 100km altitude"],
+                        ans: 0,
+                        exp: "Gravitational Potential Energy is negative and increases to zero at infinity."
+                    }
+                }
+            },
+             // --- Fluids ---
+            {
+                template: (r) => {
+                    return {
+                        q: "According to Archimedes' Principle, the buoyant force on a submerged object is equal to:",
+                        opts: ["The weight of the fluid displaced", "The weight of the object", "The volume of the object", "The density of the fluid"],
+                        ans: 0,
+                        exp: "Buoyant force equals the weight of the fluid displaced by the object."
+                    }
+                }
+            },
+            {
+                template: (r) => {
+                    return {
+                        q: "Bernoulli's principle is based on the law of conservation of:",
+                        opts: ["Energy", "Mass", "Momentum", "Angular Momentum"],
+                        ans: 0,
+                        exp: "Bernoulli's equation describes the conservation of energy in fluid flow."
+                    }
+                }
+            },
+            {
+                template: (r) => {
+                    const A = r(2, 5); const P = r(10, 20);
+                    return {
+                        q: `A pressure of ${P} Pa acts on an area of ${A} m². What is the force exerted?`,
+                        opts: [`${P * A} N`, `${P / A} N`, `${P + A} N`, `${A / P} N`],
+                        ans: 0,
+                        exp: `Force F = Pressure * Area = ${P} * ${A} = ${P * A} N.`
+                    }
+                }
+            }
+        ],
+        "Thermodynamics": [
+            // --- Basic Concepts ---
+            {
+                template: (r) => {
+                    return {
+                        q: "Which law of thermodynamics states that 'Energy cannot be created or destroyed'?",
+                        opts: ["First Law", "Zeroth Law", "Second Law", "Third Law"],
+                        ans: 0,
+                        exp: "The First Law of Thermodynamics is the law of conservation of energy."
+                    }
+                }
+            },
+            {
+                template: (r) => {
+                    const tempC = r(20, 100);
+                    return {
+                        q: `Convert ${tempC}°C to Kelvin.`,
+                        opts: [`${tempC + 273} K`, `${tempC - 273} K`, `${tempC * 273} K`, `${tempC + 32} K`],
+                        ans: 0,
+                        exp: `Kelvin = Celsius + 273. K = ${tempC} + 273 = ${tempC + 273}.`
+                    }
+                }
+            },
+            {
+                template: (r) => {
+                    return {
+                        q: "The point at which water exists as solid, liquid, and gas simultaneously is called:",
+                        opts: ["Triple Point", "Critical Point", "Boiling Point", "Melting Point"],
+                        ans: 0,
+                        exp: "The Triple Point of water is approx 273.16 K where all phases coexist."
+                    }
+                }
+            },
+            // --- Specific Heat & Latent Heat ---
+            {
+                template: (r) => {
+                    return {
+                        q: "The amount of heat required to raise the temperature of 1 kg of a substance by 1°C is called:",
+                        opts: ["Specific Heat Capacity", "Latent Heat", "Thermal Conductivity", "Entropy"],
+                        ans: 0,
+                        exp: "Specific Heat Capacity (c) is defined as Q / (mΔT)."
+                    }
+                }
+            },
+            {
+                template: (r) => {
+                    const m = r(2, 5); const L = 334; // Latent heat of fusion approx
+                    return {
+                        q: `How much heat is required to melt ${m} kg of ice at 0°C? (L_fusion = 334 kJ/kg)`,
+                        opts: [`${m * L} kJ`, `${L / m} kJ`, `${m + L} kJ`, `${m * L * 4.18} kJ`],
+                        ans: 0,
+                        exp: `Heat Q = mL = ${m} * ${L} = ${m * L} kJ.`
+                    }
+                }
+            },
+            // --- Gas Laws ---
+            {
+                template: (r) => {
+                    return {
+                        q: "Which gas law states that at constant temperature, Pressure is inversely proportional to Volume?",
+                        opts: ["Boyle's Law", "Charles's Law", "Gay-Lussac's Law", "Avogadro's Law"],
+                        ans: 0,
+                        exp: "Boyle's Law: P1V1 = P2V2 (at constant T)."
+                    }
+                }
+            },
+            {
+                template: (r) => {
+                    return {
+                        q: "In the Ideal Gas Equation PV = nRT, what does 'n' represent?",
+                        opts: ["Number of moles", "Number of molecules", "Neutron count", "Density"],
+                        ans: 0,
+                        exp: "n stands for the number of moles of the gas."
+                    }
+                }
+            },
+            {
+                template: (r) => {
+                    const T = r(300, 400); const P = 100;
+                    return {
+                        q: `If the temperature of a fixed volume of gas is doubled from ${T}K to ${T * 2}K, what happens to the pressure?`,
+                        opts: ["It doubles", "It halves", "It stays the same", "It quadruples"],
+                        ans: 0,
+                        exp: "Gay-Lussac's Law: P is proportional to T. Doubling T doubles P."
+                    }
+                }
+            },
+            // --- Processes ---
+            {
+                template: (r) => {
+                    return {
+                        q: "In an adiabatic process, which quantity remains constant?",
+                        opts: ["Heat Content (Q=0)", "Temperature", "Pressure", "Volume"],
+                        ans: 0,
+                        exp: "In an adiabatic process, there is no heat exchange with the surroundings."
+                    }
+                }
+            },
+            {
+                template: (r) => {
+                    return {
+                        q: "An isothermal process takes place at constant:",
+                        opts: ["Temperature", "Pressure", "Volume", "Entropy"],
+                        ans: 0,
+                        exp: "Iso-thermal means 'same temperature'."
+                    }
+                }
+            },
+            {
+                template: (r) => {
+                    return {
+                        q: "Which thermodynamic process occurs at constant pressure?",
+                        opts: ["Isobaric", "Isochoric", "Isothermal", "Adiabatic"],
+                        ans: 0,
+                        exp: "Isobaric means constant pressure (bar implies pressure)."
+                    }
+                }
+            },
+            // --- Engines & Efficiency ---
+            {
+                template: (r) => {
+                    const eff = r(20, 60);
+                    return {
+                        q: `A heat engine has an efficiency of ${eff}%. If the heat input is 1000 J, what is the work done?`,
+                        opts: [`${1000 * (eff / 100)} J`, `${1000 / eff} J`, `${1000 - eff} J`, `${1000 * eff} J`],
+                        ans: 0,
+                        exp: `Efficiency = Work/Input. Work = 1000 * ${eff / 100} = ${10 * eff} J.`
+                    }
+                }
+            },
+            {
+                template: (r) => {
+                    const Th = 600; const Tc = 300;
+                    return {
+                        q: `What is the maximum theoretical efficiency of a Carnot engine operating between ${Th}K and ${Tc}K?`,
+                        opts: [`50%`, `100%`, `25%`, `75%`],
+                        ans: 0,
+                        exp: `Carnot Efficiency = 1 - (Tc/Th) = 1 - (300/600) = 0.5 or 50%.`
+                    }
+                }
+            },
+            {
+                template: (r) => {
+                    return {
+                        q: "The Second Law of Thermodynamics implies that:",
+                        opts: ["Entropy of an isolated system always increases", "Energy is conserved", "Heat flows from cold to hot naturally", "Absolute zero is attainable"],
+                        ans: 0,
+                        exp: "The Second Law states that natural processes tend towards higher entropy (disorder)."
+                    }
+                }
+            },
+            // --- Kinetic Theory ---
+            {
+                template: (r) => {
+                    return {
+                        q: "According to Kinetic Theory, the average kinetic energy of gas molecules is directly proportional to:",
+                        opts: ["Absolute Temperature", "Pressure", "Volume", "Molar Mass"],
+                        ans: 0,
+                        exp: "Average KE = (3/2)kT, so it is proportional to Temperature."
+                    }
+                }
+            },
+            {
+                template: (r) => {
+                    return {
+                        q: "Which speed is the highest in a Maxwell-Boltzmann distribution?",
+                        opts: ["Most Probable Speed", "Average Speed", "RMS Speed", "Sound Speed"],
+                        ans: 2,
+                        exp: "V_rms > V_avg > V_mp in a gas distribution."
+                    }
+                }
+            }
+        ],
+        "Electromagnetism": [
+            // --- Electrostatics ---
+            {
+                template: (r) => {
+                    return {
+                        q: "Coulomb's Law states that force between two point charges is proportional to:",
+                        opts: ["Product of charges / Distance squared", "Sum of charges / Distance", "Product of charges / Distance", "Distance squared / Product of charges"],
+                        ans: 0,
+                        exp: "F = k(q1q2)/r²."
+                    }
+                }
+            },
+            {
+                template: (r) => {
+                    return {
+                        q: "The electric field inside a hollow charged conductor is:",
+                        opts: ["Zero", "Infinite", "Uniform but non-zero", "Dependent on the radius"],
+                        ans: 0,
+                        exp: "Due to cancellation of components, the E-field inside a conductor in electrostatic equilibrium is zero."
+                    }
+                }
+            },
+            {
+                template: (r) => {
+                    const q = r(2, 5); const E = r(10, 20);
+                    return {
+                        q: `A charge of ${q} C is placed in an electric field of ${E} N/C. What force does it experience?`,
+                        opts: [`${q * E} N`, `${E / q} N`, `${q + E} N`, `${q * E * 2} N`],
+                        ans: 0,
+                        exp: `F = qE = ${q} * ${E} = ${q * E} N.`
+                    }
+                }
+            },
+            {
+                template: (r) => {
+                    return {
+                        q: "Electric Potential is a ______ quantity.",
+                        opts: ["Scalar", "Vector", "Dimensionless", "Tensor"],
+                        ans: 0,
+                        exp: "Potential (Voltage) has magnitude but no direction."
+                    }
+                }
+            },
+            // --- Capacitance ---
+            {
+                template: (r) => {
+                    return {
+                        q: "The unit of Capacitance is:",
+                        opts: ["Farad", "Henry", "Weber", "Tesla"],
+                        ans: 0,
+                        exp: "Farad (F) is the unit of Capacitance."
+                    }
+                }
+            },
+            {
+                template: (r) => {
+                    const C = r(10, 50); const V = r(2, 5);
+                    return {
+                        q: `Calculate the charge stored in a ${C} µF capacitor connected to a ${V} V battery.`,
+                        opts: [`${C * V} µC`, `${C / V} µC`, `${C + V} µC`, `${0.5 * C * V} µC`],
+                        ans: 0,
+                        exp: `Q = CV = ${C} * ${V} = ${C * V} µC.`
+                    }
+                }
+            },
+            {
+                template: (r) => {
+                    const C = r(2, 10);
+                    return {
+                        q: `Two capacitors of ${C}µF each are connected in parallel. What is the equivalent capacitance?`,
+                        opts: [`${2 * C} µF`, `${C / 2} µF`, `${C} µF`, `${C * C} µF`],
+                        ans: 0,
+                        exp: `In parallel, capacitors add up: C_eq = C1 + C2 = ${C} + ${C} = ${2 * C}.`
+                    }
+                }
+            },
+            // --- Current Electricity ---
+            {
+                template: (r) => {
+                    const R = r(2, 10); const I = r(2, 5);
+                    return {
+                        q: `According to Ohm's Law, what is the voltage across a ${R}Ω resistor carrying ${I}A current?`,
+                        opts: [`${I * R} V`, `${I + R} V`, `${R / I} V`, `${I / R} V`],
+                        ans: 0,
+                        exp: `V = IR = ${I} * ${R} = ${I * R} V.`
+                    }
+                }
+            },
+            {
+                template: (r) => {
+                    const V = r(10, 20); const I = r(2, 5);
+                    return {
+                        q: `Calculate the power dissipated by a circuit with ${V}V and ${I}A current.`,
+                        opts: [`${V * I} W`, `${V / I} W`, `${V + I} W`, `${V - I} W`],
+                        ans: 0,
+                        exp: `P = VI = ${V} * ${I} = ${V * I} Watts.`
+                    }
+                }
+            },
+            {
+                template: (r) => {
+                    const r1 = r(2, 5); const r2 = r(2, 5);
+                    return {
+                        q: `Two resistors of ${r1}Ω and ${r2}Ω are connected in series. What is the equivalent resistance?`,
+                        opts: [`${r1 + r2} Ω`, `${(r1 * r2) / (r1 + r2)} Ω`, `${Math.abs(r1 - r2)} Ω`, `${r1 * r2} Ω`],
+                        ans: 0,
+                        exp: `Series: R_eq = R1 + R2 = ${r1 + r2} Ω.`
+                    }
+                }
+            },
+            {
+                template: (r) => {
+                    const r1 = 10; const r2 = 10;
+                    return {
+                        q: `Two 10Ω resistors are connected in parallel. What is the total resistance?`,
+                        opts: [`5 Ω`, `20 Ω`, `100 Ω`, `1 Ω`],
+                        ans: 0,
+                        exp: `Parallel equal resistors: R/n = 10/2 = 5 Ω.`
+                    }
+                }
+            },
+            {
+                template: (r) => {
+                    return {
+                        q: "Kirchhoff's Junction Rule is based on the conservation of:",
+                        opts: ["Charge", "Energy", "Momentum", "Mass"],
+                        ans: 0,
+                        exp: "Junction rule (Current in = Current out) represents conservation of charge."
+                    }
+                }
+            },
+            // --- Magnetism & Induction ---
+            {
+                template: (r) => {
+                    return {
+                        q: "Which rule determines the direction of the magnetic field around a straight current-carrying conductor?",
+                        opts: ["Right Hand Grip Rule", "Fleming's Left Hand Rule", "Lenz's Law", "Faraday's Law"],
+                        ans: 0,
+                        exp: "Right Hand Grip Rule: Thumb is current, fingers curl in direction of B-field."
+                    }
+                }
+            },
+            {
+                template: (r) => {
+                    const L = r(1, 5); const I = r(2, 10); const B = 2;
+                    return {
+                        q: `A ${L}m wire carries ${I}A current perpendicular to a 2T magnetic field. What is the force on it?`,
+                        opts: [`${B * I * L} N`, `${B * I} N`, `${I * L} N`, `0 N`],
+                        ans: 0,
+                        exp: `Force F = BIL sin(90) = 2 * ${I} * ${L} = ${2 * I * L} N.`
+                    }
+                }
+            },
+            {
+                template: (r) => {
+                    return {
+                        q: "Lenz's Law states that the direction of induced emf acts to:",
+                        opts: ["Oppose the change producing it", "Aid the change producing it", "Remain perpendicular", "Increase the flux"],
+                        ans: 0,
+                        exp: "Lenz's Law is basically conservation of energy; the induced effect opposes the cause."
+                    }
+                }
+            },
+            {
+                template: (r) => {
+                    return {
+                        q: "The device used to increase or decrease AC voltage is:",
+                        opts: ["Transformer", "Rectifier", "Transistor", "Diode"],
+                        ans: 0,
+                        exp: "A transformer uses mutual induction to step up or step down voltage."
+                    }
+                }
+            },
+             // --- AC Circuits ---
+            {
+                template: (r) => {
+                    return {
+                        q: "In a pure capacitor connected to AC, the current:",
+                        opts: ["Leads voltage by 90°", "Lags voltage by 90°", "Is in phase with voltage", "Leads voltage by 45°"],
+                        ans: 0,
+                        exp: "ICE: Current leads Emf (Voltage) in a Capacitor."
+                    }
+                }
+            }
+        ],
+        "Waves & Optics": [
+             // --- Oscillations ---
+            {
+                template: (r) => {
+                    const f = r(5, 10) * 10;
+                    return {
+                        q: `A wave has a frequency of ${f} Hz. What is its time period?`,
+                        opts: [`${(1 / f).toFixed(3)} s`, `${f} s`, `${f * 2} s`, `${(10 / f).toFixed(3)} s`],
+                        ans: 0,
+                        exp: `T = 1/f = 1/${f} = ${(1 / f).toFixed(3)} s.`
+                    }
+                }
+            },
+            {
+                template: (r) => {
+                    return {
+                        q: "The time period of a simple pendulum depends on:",
+                        opts: ["Length and gravity", "Mass of the bob", "Amplitude of oscillation", "Material of the string"],
+                        ans: 0,
+                        exp: "T = 2π√(L/g). It is independent of mass."
+                    }
+                }
+            },
+             // --- Wave Properties ---
+            {
+                template: (r) => {
+                    return {
+                        q: "Sound waves are:",
+                        opts: ["Longitudinal", "Transverse", "Electromagnetic", "Stationary"],
+                        ans: 0,
+                        exp: "Sound propagates via compression and rarefaction (longitudinal)."
+                    }
+                }
+            },
+            {
+                template: (r) => {
+                    const v = 340; const f = r(170, 340);
+                    return {
+                        q: `The speed of sound is 340 m/s. What is the wavelength of a ${f} Hz tone?`,
+                        opts: [`${(340 / f).toFixed(1)} m`, `${340 * f} m`, `${f / 340} m`, `${340 + f} m`],
+                        ans: 0,
+                        exp: `λ = v/f = 340/${f} = ${(340 / f).toFixed(1)} m.`
+                    }
+                }
+            },
+            {
+                template: (r) => {
+                    return {
+                        q: "Which phenomenon is observed when two waves overlap?",
+                        opts: ["Interference", "Refraction", "Dispersion", "Rectification"],
+                        ans: 0,
+                        exp: "Interference is the superposition of waves."
+                    }
+                }
+            },
+            {
+                template: (r) => {
+                    return {
+                        q: "The Doppler Effect refers to the change in ______ due to relative motion.",
+                        opts: ["Frequency", "Amplitude", "Phase", "Speed"],
+                        ans: 0,
+                        exp: "Doppler effect is the apparent change in frequency (pitch) of a wave."
+                    }
+                }
+            },
+            // --- Geometric Optics ---
+            {
+                template: (r) => {
+                    return {
+                        q: "The bending of light as it passes from one medium to another is called:",
+                        opts: ["Refraction", "Reflection", "Diffraction", "Interference"],
+                        ans: 0,
+                        exp: "Refraction is the change in direction due to change in speed."
+                    }
+                }
+            },
+            {
+                template: (r) => {
+                    const n = 1.5; const c = 300000;
+                    return {
+                        q: `If the refractive index of glass is 1.5, what is the speed of light in glass? (c = 300,000 km/s)`,
+                        opts: [`200,000 km/s`, `450,000 km/s`, `150,000 km/s`, `300,000 km/s`],
+                        ans: 0,
+                        exp: `v = c/n = 300,000 / 1.5 = 200,000 km/s.`
+                    }
+                }
+            },
+            {
+                template: (r) => {
+                    return {
+                        q: "A convex lens is also known as a ______ lens.",
+                        opts: ["Converging", "Diverging", "Plane", "Concave"],
+                        ans: 0,
+                        exp: "Convex lenses converge parallel rays to a focal point."
+                    }
+                }
+            },
+            {
+                template: (r) => {
+                    const f = r(10, 20);
+                    return {
+                        q: `A mirror has a focal length of ${f} cm. What is its radius of curvature?`,
+                        opts: [`${2 * f} cm`, `${f} cm`, `${f / 2} cm`, `${f * f} cm`],
+                        ans: 0,
+                        exp: `Radius of curvature R = 2f = 2 * ${f} = ${2 * f} cm.`
+                    }
+                }
+            },
+            {
+                template: (r) => {
+                    return {
+                        q: "Total Internal Reflection occurs when light travels from:",
+                        opts: ["Denser to rarer medium", "Rarer to denser medium", "Vacuum to air", "Air to glass"],
+                        ans: 0,
+                        exp: "TIR happens when light enters a rarer medium at an angle greater than the critical angle."
+                    }
+                }
+            },
+            // --- Physical Optics ---
+            {
+                template: (r) => {
+                    return {
+                        q: "Which experiment proved the wave nature of light?",
+                        opts: ["Young's Double Slit", "Photoelectric Effect", "Compton Scattering", "Michelson-Morley"],
+                        ans: 0,
+                        exp: "Young's Double Slit Experiment showed interference patterns characteristic of waves."
+                    }
+                }
+            },
+            {
+                template: (r) => {
+                    return {
+                        q: "The color of light is determined by its:",
+                        opts: ["Frequency", "Amplitude", "Speed", "Phase"],
+                        ans: 0,
+                        exp: "Frequency determines color and does not change when passing through different media."
+                    }
+                }
+            }
+        ],
+        "Modern Physics": [
+             // --- Quantum Basics ---
+            {
+                template: (r) => {
+                    return {
+                        q: "Which phenomenon proves the particle nature of light?",
+                        opts: ["Photoelectric Effect", "Interference", "Diffraction", "Polarization"],
+                        ans: 0,
+                        exp: "Photoelectric effect shows light acting as discrete packets (photons) of energy."
+                    }
+                }
+            },
+            {
+                template: (r) => {
+                    return {
+                        q: "What is the energy of a photon with frequency f?",
+                        opts: ["hf", "mc²", "1/2 mv²", "h/f"],
+                        ans: 0,
+                        exp: "E = hf, where h is Planck's constant."
+                    }
+                }
+            },
+             // --- Atoms & Nuclei ---
+            {
+                template: (r) => {
+                    return {
+                        q: "The splitting of a heavy nucleus into two lighter nuclei is called:",
+                        opts: ["Nuclear Fission", "Nuclear Fusion", "Radioactive Decay", "Ionization"],
+                        ans: 0,
+                        exp: "Fission splits a heavy nucleus (like Uranium) releasing energy."
+                    }
+                }
+            },
+            {
+                template: (r) => {
+                    return {
+                        q: "Nuclear Fusion occurs in:",
+                        opts: ["Stars (like the Sun)", "Nuclear Reactors", "X-ray machines", "Atomic bombs"],
+                        ans: 0,
+                        exp: "Fusion powers stars by combining hydrogen into helium."
+                    }
+                }
+            },
+            {
+                template: (r) => {
+                    const hl = r(2, 5); const days = hl * 2;
+                    return {
+                        q: `A radioactive substance has a half-life of ${hl} days. What fraction remains after ${days} days?`,
+                        opts: [`1/4`, `1/2`, `1/8`, `1/16`],
+                        ans: 0,
+                        exp: `${days} days is exactly 2 half-lives (${days}/${hl}=2). Remaining = (1/2)^2 = 1/4.`
+                    }
+                }
+            },
+            {
+                template: (r) => {
+                    return {
+                        q: "Isotopes are atoms with the same number of protons but different number of:",
+                        opts: ["Neutrons", "Electrons", "Positrons", "Photons"],
+                        ans: 0,
+                        exp: "Isotopes differ in neutron count (and thus mass number)."
+                    }
+                }
+            },
+            // --- Relativity ---
+            {
+                template: (r) => {
+                    return {
+                        q: "According to Einstein's mass-energy equivalence, Energy (E) equals:",
+                        opts: ["mc²", "mc", "1/2 mv²", "mgh"],
+                        ans: 0,
+                        exp: "E = mc² is the famous mass-energy equivalence equation."
+                    }
+                }
+            },
+            {
+                template: (r) => {
+                    return {
+                        q: "As an object's speed approaches the speed of light, its mass:",
+                        opts: ["Increases", "Decreases", "Stays constant", "Becomes zero"],
+                        ans: 0,
+                        exp: "Relativistic mass increases as velocity approaches c."
+                    }
+                }
+            },
+            // --- Semiconductors ---
+            {
+                template: (r) => {
+                    return {
+                        q: "In an n-type semiconductor, the majority charge carriers are:",
+                        opts: ["Electrons", "Holes", "Protons", "Neutrons"],
+                        ans: 0,
+                        exp: "n-type means 'negative' type, where electrons are the majority carriers."
+                    }
+                }
+            },
+            {
+                template: (r) => {
+                    return {
+                        q: "A p-n junction diode allows current to flow easily in:",
+                        opts: ["Forward Bias", "Reverse Bias", "Both directions", "Neither direction"],
+                        ans: 0,
+                        exp: "Diodes conduct in forward bias and block in reverse bias."
+                    }
+                }
+            }
+        ]
+    },
             "Second Year": {
                 "Electricity & Magnetism": [
                     {
@@ -1361,83 +2069,393 @@
                 ]
             },
             "Third Year": {
-                "Quantum Mechanics": [
-                    {
-                        template: (r) => {
-                            return {
-                                q: "The Heisenberg Uncertainty Principle states it is impossible to simultaneously measure:",
-                                opts: ["Position and Momentum", "Energy and Time", "Both A and B", "Mass and Velocity"],
-                                ans: 2,
-                                exp: "The principle applies to canonical conjugate pairs like Position-Momentum and Energy-Time."
-                            }
-                        }
-                    },
-                    {
-                         template: (r) => {
-                            return {
-                                q: "For a particle in a 1D box of length L, the energy levels are proportional to:",
-                                opts: ["n", "n²", "1/n", "sqrt(n)"],
-                                ans: 1,
-                                exp: "E_n = (n²h²)/(8mL²), so Energy is proportional to n²."
-                            }
-                        }
-                    },
-                    {
-                        template: (r) => {
-                            return {
-                                q: "The wave function Ψ must be ______ to be physically acceptable.",
-                                opts: ["Discontinuous", "Infinite", "Normalized", "Zero everywhere"],
-                                ans: 2,
-                                exp: "The wave function must be square-integrable and normalized (total probability = 1)."
-                            }
-                        }
-                    }
-                ],
-                "Statistical Physics": [
-                    {
-                        template: (r) => {
-                            return {
-                                q: "Which statistics apply to particles with half-integer spin (Fermions)?",
-                                opts: ["Maxwell-Boltzmann", "Bose-Einstein", "Fermi-Dirac", "Newtonian"],
-                                ans: 2,
-                                exp: "Fermions follow the Pauli Exclusion Principle and obey Fermi-Dirac statistics."
-                            }
-                        }
-                    },
-                    {
-                        template: (r) => {
-                            return {
-                                q: "Photons obey which type of statistics?",
-                                opts: ["Maxwell-Boltzmann", "Bose-Einstein", "Fermi-Dirac", "None"],
-                                ans: 1,
-                                exp: "Photons are bosons (integer spin) and obey Bose-Einstein statistics."
-                            }
-                        }
-                    }
-                ],
-                "Scientific Computing": [
-                     {
-                        template: (r) => {
-                            return {
-                                q: "Which method is commonly used for finding roots of non-linear equations?",
-                                opts: ["Simpson's Rule", "Newton-Raphson Method", "Euler's Method", "Trapezoidal Rule"],
-                                ans: 1,
-                                exp: "Newton-Raphson is an iterative method for finding roots. Simpson's and Trapezoidal are for integration."
-                            }
-                        }
-                    },
-                    {
-                        template: (r) => {
-                            return {
-                                q: "Euler's method is used for solving:",
-                                opts: ["Linear Equations", "Differential Equations", "Integral Equations", "Quadratic Equations"],
-                                ans: 1,
-                                exp: "Euler's method is a first-order numerical procedure for solving ordinary differential equations (ODEs)."
-                            }
-                        }
-                    }
-                ]
+                 "Quantum Mechanics": [
+        {
+            template: (r) => {
+                return {
+                    q: "The Heisenberg Uncertainty Principle states it is impossible to simultaneously measure:",
+                    opts: ["Position and Momentum", "Energy and Time", "Both A and B", "Mass and Velocity"],
+                    ans: 2,
+                    exp: "The principle applies to canonical conjugate pairs like Position-Momentum and Energy-Time."
+                }
             }
+        },
+        {
+            template: (r) => {
+                return {
+                    q: "For a particle in a 1D box of length L, the energy levels are proportional to:",
+                    opts: ["n", "n²", "1/n", "sqrt(n)"],
+                    ans: 1,
+                    exp: "E_n = (n²h²)/(8mL²), so Energy is proportional to n²."
+                }
+            }
+        },
+        {
+            template: (r) => {
+                return {
+                    q: "The wave function Ψ must be ______ to be physically acceptable.",
+                    opts: ["Discontinuous", "Infinite", "Normalized", "Zero everywhere"],
+                    ans: 2,
+                    exp: "The wave function must be square-integrable and normalized (total probability = 1)."
+                }
+            }
+        },
+        {
+            template: (r) => {
+                return {
+                    q: "Which quantum number determines the shape of an orbital?",
+                    opts: ["Principal (n)", "Azimuthal (l)", "Magnetic (m)", "Spin (s)"],
+                    ans: 1,
+                    exp: "The azimuthal quantum number (l) describes the subshell and the shape of the orbital (s, p, d, f)."
+                }
+            }
+        },
+        {
+            template: (r) => {
+                return {
+                    q: "The phenomenon where a particle passes through a potential barrier higher than its energy is called:",
+                    opts: ["Diffraction", "Refraction", "Quantum Tunneling", "Photoelectric Effect"],
+                    ans: 2,
+                    exp: "Quantum tunneling allows particles to traverse barriers they classically could not surmount."
+                }
+            }
+        },
+        {
+            template: (r) => {
+                return {
+                    q: "In the Schrödinger equation, HΨ = EΨ, what does H represent?",
+                    opts: ["Planck's Constant", "The Hamiltonian Operator", "The Wave Function", "Potential Energy"],
+                    ans: 1,
+                    exp: "H is the Hamiltonian operator, corresponding to the total energy of the system."
+                }
+            }
+        },
+        {
+            template: (r) => {
+                return {
+                    q: "What is the value of the spin quantum number for an electron?",
+                    opts: ["1", "1/2", "0", "-1"],
+                    ans: 1,
+                    exp: "Electrons are fermions with half-integer spin, specifically s = 1/2."
+                }
+            }
+        },
+        {
+            template: (r) => {
+                return {
+                    q: "The Photoelectric effect demonstrates which nature of light?",
+                    opts: ["Wave nature", "Particle nature", "Magnetic nature", "Continuous nature"],
+                    ans: 1,
+                    exp: "It demonstrates the quantization of light into photons (particle nature)."
+                }
+            }
+        },
+        {
+            template: (r) => {
+                return {
+                    q: "Which experiment provided evidence for electron spin?",
+                    opts: ["Double Slit Experiment", "Michelson-Morley", "Stern-Gerlach", "Davisson-Germer"],
+                    ans: 2,
+                    exp: "The Stern-Gerlach experiment showed that spatial quantization of momentum is binary, implying spin."
+                }
+            }
+        },
+        {
+            template: (r) => {
+                return {
+                    q: "The energy of a harmonic oscillator in its ground state (n=0) is:",
+                    opts: ["0", "ħω", "1/2 ħω", "infinite"],
+                    ans: 2,
+                    exp: "This is the Zero Point Energy, given by E = (n + 1/2)ħω."
+                }
+            }
+        },
+        {
+            template: (r) => {
+                return {
+                    q: "Two operators A and B commute if:",
+                    opts: ["[A, B] = 1", "[A, B] = 0", "[A, B] = iħ", "AB = -BA"],
+                    ans: 1,
+                    exp: "Commuting operators ([A,B] = AB - BA = 0) share a common set of eigenfunctions."
+                }
+            }
+        },
+        {
+            template: (r) => {
+                return {
+                    q: "De Broglie wavelength is related to momentum by:",
+                    opts: ["λ = p/h", "λ = h/p", "λ = hp", "λ = h/p²"],
+                    ans: 1,
+                    exp: "The de Broglie hypothesis states λ = h/p."
+                }
+            }
+        },
+        {
+            template: (r) => {
+                return {
+                    q: "Which interpretation of Quantum Mechanics involves 'wave function collapse' upon measurement?",
+                    opts: ["Many-Worlds", "Copenhagen", "Pilot Wave", "Hidden Variable"],
+                    ans: 1,
+                    exp: "The Copenhagen interpretation, championed by Bohr and Heisenberg, posits wave function collapse."
+                }
+            }
+        }
+    ],
+    "Statistical Physics": [
+        {
+            template: (r) => {
+                return {
+                    q: "Which statistics apply to particles with half-integer spin (Fermions)?",
+                    opts: ["Maxwell-Boltzmann", "Bose-Einstein", "Fermi-Dirac", "Newtonian"],
+                    ans: 2,
+                    exp: "Fermions follow the Pauli Exclusion Principle and obey Fermi-Dirac statistics."
+                }
+            }
+        },
+        {
+            template: (r) => {
+                return {
+                    q: "Photons obey which type of statistics?",
+                    opts: ["Maxwell-Boltzmann", "Bose-Einstein", "Fermi-Dirac", "None"],
+                    ans: 1,
+                    exp: "Photons are bosons (integer spin) and obey Bose-Einstein statistics."
+                }
+            }
+        },
+        {
+            template: (r) => {
+                return {
+                    q: "In the Canonical Ensemble, what quantity is held constant?",
+                    opts: ["Energy (E)", "Temperature (T)", "Chemical Potential (μ)", "Entropy (S)"],
+                    ans: 1,
+                    exp: "The Canonical Ensemble represents a system in thermal equilibrium with a heat bath at constant T, V, and N."
+                }
+            }
+        },
+        {
+            template: (r) => {
+                return {
+                    q: "The partition function Z serves as a normalization factor for:",
+                    opts: ["Probability", "Velocity", "Mass", "Charge"],
+                    ans: 0,
+                    exp: "Z is the sum of Boltzmann factors and normalizes the probabilities of states."
+                }
+            }
+        },
+        {
+            template: (r) => {
+                return {
+                    q: "Entropy (S) is related to the number of microstates (Ω) by:",
+                    opts: ["S = k ln Ω", "S = k Ω", "S = k/Ω", "S = e^Ω"],
+                    ans: 0,
+                    exp: "This is Boltzmann's famous entropy formula."
+                }
+            }
+        },
+        {
+            template: (r) => {
+                return {
+                    q: "At absolute zero (0 K), the entropy of a perfect crystal is:",
+                    opts: ["Infinite", "Maximum", "Zero", "Variable"],
+                    ans: 2,
+                    exp: "This is a statement of the Third Law of Thermodynamics."
+                }
+            }
+        },
+        {
+            template: (r) => {
+                return {
+                    q: "The Pauli Exclusion Principle states that no two fermions can:",
+                    opts: ["Collide", "Occupy the same quantum state", "Have the same mass", "Have zero energy"],
+                    ans: 1,
+                    exp: "They cannot share the exact same set of quantum numbers."
+                }
+            }
+        },
+        {
+            template: (r) => {
+                return {
+                    q: "Which distribution is used for distinguishable particles at high temperatures?",
+                    opts: ["Maxwell-Boltzmann", "Fermi-Dirac", "Bose-Einstein", "Gaussian"],
+                    ans: 0,
+                    exp: "Maxwell-Boltzmann statistics apply when quantum effects are negligible (high T, low density)."
+                }
+            }
+        },
+        {
+            template: (r) => {
+                return {
+                    q: "The equipartition theorem states that each degree of freedom contributes ______ to the average energy.",
+                    opts: ["kT", "1/2 kT", "3/2 kT", "Zero"],
+                    ans: 1,
+                    exp: "Each quadratic degree of freedom contributes 1/2 kT per particle."
+                }
+            }
+        },
+        {
+            template: (r) => {
+                return {
+                    q: "Bose-Einstein Condensation occurs when:",
+                    opts: ["Temperature is very high", "Particles repel each other", "Macroscopic fraction occupies ground state", "Spin is 1/2"],
+                    ans: 2,
+                    exp: "At critical low T, a large fraction of bosons 'condense' into the lowest energy quantum state."
+                }
+            }
+        },
+        {
+            template: (r) => {
+                return {
+                    q: "The Ising Model is primarily used to study:",
+                    opts: ["Fluid dynamics", "Ferromagnetism", "Gravity", "Nuclear decay"],
+                    ans: 1,
+                    exp: "It models magnetic dipole moments of atomic spins on a lattice."
+                }
+            }
+        },
+        {
+            template: (r) => {
+                return {
+                    q: "In the Grand Canonical Ensemble, the system can exchange:",
+                    opts: ["Only Energy", "Only Particles", "Energy and Particles", "Neither"],
+                    ans: 2,
+                    exp: "It allows exchange of both energy and particles with a reservoir (constant T and μ)."
+                }
+            }
+        }
+    ],
+    "Scientific Computing": [
+        {
+             template: (r) => {
+                return {
+                    q: "Which method is commonly used for finding roots of non-linear equations?",
+                    opts: ["Simpson's Rule", "Newton-Raphson Method", "Euler's Method", "Trapezoidal Rule"],
+                    ans: 1,
+                    exp: "Newton-Raphson is an iterative method for finding roots. Simpson's and Trapezoidal are for integration."
+                }
+            }
+        },
+        {
+            template: (r) => {
+                return {
+                    q: "Euler's method is used for solving:",
+                    opts: ["Linear Equations", "Differential Equations", "Integral Equations", "Quadratic Equations"],
+                    ans: 1,
+                    exp: "Euler's method is a first-order numerical procedure for solving ordinary differential equations (ODEs)."
+                }
+            }
+        },
+        {
+            template: (r) => {
+                return {
+                    q: "Simpson's 1/3 Rule requires the number of intervals to be:",
+                    opts: ["Odd", "Even", "Prime", "Any number"],
+                    ans: 1,
+                    exp: "Simpson's 1/3 rule fits parabolas to pairs of intervals, requiring an even number of segments."
+                }
+            }
+        },
+        {
+            template: (r) => {
+                return {
+                    q: "Which method is a 4th order Runge-Kutta method often referred to as?",
+                    opts: ["RK2", "RK4", "Euler", "Heun"],
+                    ans: 1,
+                    exp: "RK4 is the standard fourth-order Runge-Kutta method for solving ODEs."
+                }
+            }
+        },
+        {
+            template: (r) => {
+                return {
+                    q: "The error in the Trapezoidal Rule is of order:",
+                    opts: ["O(h)", "O(h²)", "O(h³)", "O(h⁴)"],
+                    ans: 1,
+                    exp: "Global error for the Trapezoidal rule is O(h²)."
+                }
+            }
+        },
+        {
+            template: (r) => {
+                return {
+                    q: "Gaussian Elimination is used to solve:",
+                    opts: ["Systems of Linear Equations", "Partial Differential Equations", "Optimization problems", "Roots"],
+                    ans: 0,
+                    exp: "It is an algorithm for solving systems of linear equations of the form Ax=b."
+                }
+            }
+        },
+        {
+            template: (r) => {
+                return {
+                    q: "What is 'Round-off' error?",
+                    opts: ["Error from stopping an infinite series", "Error from finite precision arithmetic", "Error from model assumptions", "Human error"],
+                    ans: 1,
+                    exp: "Round-off error occurs because computers represent numbers with a fixed number of bits."
+                }
+            }
+        },
+        {
+            template: (r) => {
+                return {
+                    q: "What is 'Truncation' error?",
+                    opts: ["Error from finite precision", "Error from approximating a continuous process", "Hardware failure", "Input error"],
+                    ans: 1,
+                    exp: "Truncation error arises from using an approximation in place of an exact mathematical procedure (e.g., Taylor series cutoff)."
+                }
+            }
+        },
+        {
+            template: (r) => {
+                return {
+                    q: "Monte Carlo methods rely primarily on:",
+                    opts: ["Deterministic algorithms", "Random sampling", "Exact analytical solutions", "Gradient descent"],
+                    ans: 1,
+                    exp: "Monte Carlo methods use repeated random sampling to obtain numerical results."
+                }
+            }
+        },
+        {
+            template: (r) => {
+                return {
+                    q: "Which method brackets the root and is guaranteed to converge?",
+                    opts: ["Newton-Raphson", "Secant Method", "Bisection Method", "Fixed Point Iteration"],
+                    ans: 2,
+                    exp: "Bisection repeatedly halves the interval and is robust, though slower than Newton's."
+                }
+            }
+        },
+        {
+            template: (r) => {
+                return {
+                    q: "Interpolation differs from regression in that interpolation:",
+                    opts: ["Finds a best-fit line", "Passes exactly through data points", "Minimizes error squared", "Predicts future values"],
+                    ans: 1,
+                    exp: "Interpolation constructs a function that passes exactly through the given data points."
+                }
+            }
+        },
+        {
+            template: (r) => {
+                return {
+                    q: "LU Decomposition factors a matrix A into:",
+                    opts: ["Lower and Upper triangular matrices", "Left and Up matrices", "Large and Unit matrices", "Linear and Uniform matrices"],
+                    ans: 0,
+                    exp: "A = LU, where L is lower triangular and U is upper triangular."
+                }
+            }
+        },
+        {
+            template: (r) => {
+                return {
+                    q: "The Fast Fourier Transform (FFT) reduces complexity from O(N²) to:",
+                    opts: ["O(N)", "O(log N)", "O(N log N)", "O(N³)"],
+                    ans: 2,
+                    exp: "The Cooley-Tukey FFT algorithm significantly speeds up DFT to O(N log N)."
+                }
+            }
+        }
+    ]
+}
         };
 
         let currentQuiz = [];
