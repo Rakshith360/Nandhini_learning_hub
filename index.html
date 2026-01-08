@@ -9,7 +9,7 @@
     <!-- Confetti Library -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     
-    <!-- Three.js Libraries for the Flute -->
+    <!-- Three.js Libraries -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <!-- Post Processing Libraries for Bloom -->
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/EffectComposer.js"></script>
@@ -20,7 +20,7 @@
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
 
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Cinzel:wght@700&display=swap');
         
         body {
             font-family: 'Poppins', sans-serif;
@@ -32,6 +32,109 @@
             flex-direction: column;
             transition: background 0.5s ease;
         }
+
+        /* --- INTRO ANIMATION STYLES --- */
+        #intro-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 9999;
+            background: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            overflow: hidden;
+            transition: opacity 1.5s ease-out;
+        }
+
+        .intro-content {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            opacity: 0;
+            animation: introFadeIn 1s ease-out forwards 0.5s;
+        }
+
+        .intro-image-container {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            padding: 5px;
+            background: linear-gradient(45deg, #ff00cc, #3333ff);
+            box-shadow: 0 0 30px rgba(255, 0, 204, 0.6);
+            animation: pulseGlow 2s infinite alternate;
+        }
+
+        .intro-image {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid #000;
+        }
+
+        .intro-title {
+            font-family: 'Cinzel', serif;
+            font-size: 3.5rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            background: linear-gradient(to right, #fff, #a5b4fc, #fff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 20px rgba(165, 180, 252, 0.5);
+            margin-bottom: 10px;
+            transform: scale(0.9);
+            animation: textZoom 4s ease-out forwards;
+        }
+
+        .intro-quote {
+            font-size: 1.2rem;
+            color: #e2e8f0;
+            max-width: 600px;
+            margin: 0 auto 30px;
+            font-style: italic;
+            opacity: 0;
+            animation: slideUpFade 1s ease-out forwards 1.5s;
+        }
+
+        .enter-btn {
+            background: transparent;
+            border: 2px solid rgba(255,255,255,0.3);
+            color: white;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            opacity: 0;
+            animation: fadeIn 1s ease-out forwards 2.5s;
+            backdrop-filter: blur(5px);
+        }
+
+        .enter-btn:hover {
+            background: white;
+            color: black;
+            box-shadow: 0 0 20px white;
+            transform: translateY(-3px);
+        }
+
+        @keyframes introFadeIn { to { opacity: 1; } }
+        @keyframes pulseGlow { 
+            0% { box-shadow: 0 0 20px rgba(236, 72, 153, 0.5); transform: scale(1); }
+            100% { box-shadow: 0 0 50px rgba(59, 130, 246, 0.8); transform: scale(1.05); }
+        }
+        @keyframes textZoom { to { transform: scale(1); } }
+        @keyframes slideUpFade { 
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- END INTRO STYLES --- */
 
         /* Custom Scrollbar */
         ::-webkit-scrollbar {
@@ -308,14 +411,33 @@
                 margin-bottom: 5px; 
             }
             .node-root { margin-bottom: 20px; margin-left: -20px; width: calc(100% + 20px); }
+            
+            .intro-title { font-size: 2rem; }
         }
 
     </style>
 </head>
 <body class="min-h-screen flex flex-col bg-slate-50">
 
-    <!-- Navigation -->
-    <nav class="bg-indigo-900 text-white shadow-lg sticky top-0 z-50 backdrop-blur-md bg-opacity-90 border-b border-indigo-700">
+    <!-- WELCOME ANIMATION OVERLAY -->
+    <div id="intro-overlay">
+        <!-- 3D Canvas Intro Background -->
+        <canvas id="intro-canvas" style="position: absolute; top:0; left:0; width:100%; height:100%; z-index: 1;"></canvas>
+        
+        <div class="intro-content">
+            <div class="intro-image-container">
+                <!-- REPLACE WITH YOUR IMAGE URL -->
+                <img src="krishna_krishna.jpeg" alt="Nandhini" class="intro-image">
+            </div>
+            <h1 class="intro-title">Welcome Nandhini</h1>
+            <p class="intro-quote">"Perform your obligatory duty, because action is indeed better than inaction."</p>
+            <p class="text-xs text-gray-400 mb-6 uppercase tracking-widest">- Lord Krishna, Bhagavad Gita</p>
+            <button onclick="closeIntro()" class="enter-btn">Enter Universe <i class="fas fa-chevron-right ml-2"></i></button>
+        </div>
+    </div>
+
+    <!-- Navigation (Hidden initially) -->
+    <nav id="main-nav" class="bg-indigo-900 text-white shadow-lg sticky top-0 z-50 backdrop-blur-md bg-opacity-90 border-b border-indigo-700 hidden">
         <div class="container mx-auto px-4 py-3 flex justify-between items-center">
             <div class="flex items-center space-x-2 cursor-pointer group" onclick="renderHome()">
                 <i class="fas fa-atom text-2xl text-cyan-400 group-hover:animate-spin"></i>
@@ -343,12 +465,12 @@
     </nav>
 
     <!-- Main Content Area -->
-    <main id="app" class="flex-grow container mx-auto px-4 py-8 relative z-10">
+    <main id="app" class="flex-grow container mx-auto px-4 py-8 relative z-10 hidden">
         <!-- Content will be injected here by JS -->
     </main>
 
     <!-- Footer -->
-    <footer id="main-footer" class="bg-slate-900 text-slate-300 py-8 mt-auto z-10 relative">
+    <footer id="main-footer" class="bg-slate-900 text-slate-300 py-8 mt-auto z-10 relative hidden">
         <div class="container mx-auto text-center">
             <div class="flex justify-center space-x-4 mb-4">
                 <i class="fas fa-star text-yellow-400"></i>
@@ -700,9 +822,114 @@
         let fluteResizeHandler = null; 
         let spaceAnimationId = null; // New ID for space animation
         let spaceResizeHandler = null; // New resize handler for space
+        let introAnimationId = null; // ID for intro animation
         let activeQuizYear = null;    // STORE ACTIVE QUIZ CONTEXT
         let activeQuizChapter = null; // STORE ACTIVE QUIZ CONTEXT
         let currentAudio = null; // To track and stop audio
+
+        // --- INIT WELCOME ANIMATION ---
+        function initIntro() {
+            const canvas = document.getElementById('intro-canvas');
+            const scene = new THREE.Scene();
+            // Fog to hide distant particles
+            scene.fog = new THREE.FogExp2(0x000000, 0.002);
+
+            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.z = 1000;
+
+            const renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(window.devicePixelRatio);
+
+            // Particles
+            const geometry = new THREE.BufferGeometry();
+            const count = 2000;
+            const positions = new Float32Array(count * 3);
+            const colors = new Float32Array(count * 3);
+
+            for (let i = 0; i < count; i++) {
+                // Random position in a large cube
+                positions[i * 3] = (Math.random() - 0.5) * 2000;
+                positions[i * 3 + 1] = (Math.random() - 0.5) * 2000;
+                positions[i * 3 + 2] = (Math.random() - 0.5) * 2000;
+
+                // Color gradient (Blue/Pink/Purple)
+                const colorType = Math.random();
+                if(colorType > 0.6) {
+                    // Cyan
+                    colors[i * 3] = 0; colors[i * 3 + 1] = 1; colors[i * 3 + 2] = 1;
+                } else if (colorType > 0.3) {
+                    // Pink
+                    colors[i * 3] = 1; colors[i * 3 + 1] = 0; colors[i * 3 + 2] = 0.5;
+                } else {
+                    // White
+                    colors[i * 3] = 1; colors[i * 3 + 1] = 1; colors[i * 3 + 2] = 1;
+                }
+            }
+
+            geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+            const material = new THREE.PointsMaterial({
+                size: 3,
+                vertexColors: true,
+                transparent: true,
+                opacity: 0.8,
+                sizeAttenuation: true
+            });
+
+            const particles = new THREE.Points(geometry, material);
+            scene.add(particles);
+
+            let speed = 2;
+            
+            function animateIntro() {
+                introAnimationId = requestAnimationFrame(animateIntro);
+
+                // Move particles towards camera to create "Warp Speed"
+                const positions = particles.geometry.attributes.position.array;
+                for(let i = 0; i < count; i++) {
+                    positions[i * 3 + 2] += speed; 
+
+                    // If particle passes camera, reset to back
+                    if(positions[i * 3 + 2] > 1000) {
+                        positions[i * 3 + 2] = -1000;
+                    }
+                }
+                particles.geometry.attributes.position.needsUpdate = true;
+
+                // Slowly rotate system
+                particles.rotation.z += 0.002;
+
+                renderer.render(scene, camera);
+            }
+
+            animateIntro();
+
+            // Resize handler
+            window.addEventListener('resize', () => {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            });
+        }
+
+        function closeIntro() {
+            const overlay = document.getElementById('intro-overlay');
+            overlay.style.opacity = '0';
+            
+            // Show Nav and Main Content
+            document.getElementById('main-nav').classList.remove('hidden');
+            document.getElementById('app').classList.remove('hidden');
+            document.getElementById('main-footer').classList.remove('hidden');
+            
+            // Clean up THREE.js intro
+            setTimeout(() => {
+                overlay.remove();
+                if(introAnimationId) cancelAnimationFrame(introAnimationId);
+                renderHome(); // Trigger Home render logic (space bg, etc)
+            }, 1500);
+        }
 
         // --- CLEANUP FUNCTION ---
         function cleanup() {
@@ -1148,7 +1375,7 @@
 
         // --- INTELLIGENT QUIZ GENERATOR ---
         // Enhanced Question Bank to Reduce Repetition
-        const quizData = {
+          const quizData = {
             "First Year": {
                  "Mechanics & Gravitation": [
             // --- Existing & Basic ---
@@ -3498,7 +3725,8 @@
             }
         }
 
-        renderHome();
+        // START APP WITH INTRO
+        initIntro();
     </script>
 </body>
 </html>
