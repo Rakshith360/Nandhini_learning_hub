@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -702,6 +702,7 @@
         let spaceResizeHandler = null; // New resize handler for space
         let activeQuizYear = null;    // STORE ACTIVE QUIZ CONTEXT
         let activeQuizChapter = null; // STORE ACTIVE QUIZ CONTEXT
+        let currentAudio = null; // To track and stop audio
 
         // --- CLEANUP FUNCTION ---
         function cleanup() {
@@ -713,6 +714,13 @@
                 window.removeEventListener('resize', fluteResizeHandler);
                 fluteResizeHandler = null;
             }
+            
+            // Stop Divine Audio if playing
+            if (currentAudio) {
+                currentAudio.pause();
+                currentAudio = null;
+            }
+
             // CLEAN UP SPACE ANIMATION
             stopSpaceBackground();
 
@@ -1738,7 +1746,7 @@
             document.getElementById('tree-detail-modal').classList.remove('hidden');
         }
 
-        // --- DIVINE FLUTE (Three.js Integration) ---
+        // --- DIVINE FLUTE (Three.js Integration & Audio) ---
         function renderFlute() {
             cleanup();
             app.classList.remove('container', 'mx-auto', 'px-4', 'py-8');
@@ -1749,21 +1757,80 @@
 
             app.innerHTML = `
                 <div id="flute-container" class="relative w-full h-[calc(100vh-60px)] overflow-hidden bg-[#050510]">
-                    <div id="loading" class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-teal-400 font-light text-xl tracking-widest transition-opacity duration-1000 z-20">Summoning the Divine...</div>
+                    <!-- Audio Element (Hidden) -->
+                    <!-- REPLACE 'your-audio-file.mp3' WITH YOUR ACTUAL AUDIO FILE PATH -->
+                    <audio id="divine-audio" loop>
+                        <source src="https://res.cloudinary.com/dpcabbwmx/video/upload/v1767867990/krishna_flute_music_i30yrm.mp3" type="audio/mp3">
+                        Your browser does not support the audio element.
+                    </audio>
 
-                    <div id="ui-layer" class="absolute top-8 left-8 text-white z-10 pointer-events-none">
-                        <h1 class="text-4xl md:text-6xl font-serif text-teal-200" style="text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);">Venu</h1>
-                        <p class="text-sm md:text-lg text-teal-100 opacity-80 mt-2">The Divine Instrument</p>
+                    <!-- Overlay (Initial State) -->
+                    <div id="flute-overlay" class="absolute inset-0 bg-black z-50 flex flex-col items-center justify-center transition-opacity duration-1000">
+                        <button onclick="startDivineExperience()" class="group relative">
+                            <div class="absolute -inset-1 bg-gradient-to-r from-teal-400 to-blue-500 rounded-full blur opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 animate-pulse"></div>
+                            <div class="relative w-24 h-24 bg-black rounded-full border-2 border-teal-500 flex items-center justify-center text-teal-400 text-4xl hover:text-white transition transform hover:scale-110">
+                                <i class="fas fa-play ml-2"></i>
+                            </div>
+                        </button>
+                        <p class="text-teal-500 mt-6 font-light tracking-widest uppercase text-sm animate-pulse">Tap to Enter the Divine</p>
                     </div>
 
-                    <div id="three-canvas" class="w-full h-full block"></div>
-                    
-                    <button onclick="renderHome()" class="absolute bottom-8 right-8 bg-white/10 hover:bg-white/20 text-white px-6 py-2 rounded-full border border-white/30 backdrop-blur z-20 transition">
-                         Exit <i class="fas fa-sign-out-alt ml-2"></i>
-                    </button>
+                    <div id="loading" class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-teal-400 font-light text-xl tracking-widest transition-opacity duration-1000 z-20 pointer-events-none opacity-0">Summoning the Divine...</div>
+
+                    <!-- UI Layer (Initially Hidden) -->
+                    <div id="flute-ui" class="opacity-0 transition-opacity duration-1000 pointer-events-none">
+                        <div id="ui-layer" class="absolute top-8 left-8 text-white z-10 pointer-events-none">
+                            <h1 class="text-4xl md:text-6xl font-serif text-teal-200" style="text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);">Venu</h1>
+                            <p class="text-sm md:text-lg text-teal-100 opacity-80 mt-2">The Divine Instrument</p>
+                        </div>
+                        
+                        <button onclick="renderHome()" class="absolute bottom-8 right-8 bg-white/10 hover:bg-white/20 text-white px-6 py-2 rounded-full border border-white/30 backdrop-blur z-20 transition pointer-events-auto">
+                             Exit <i class="fas fa-sign-out-alt ml-2"></i>
+                        </button>
+                    </div>
+
+                    <!-- 3D Canvas Container -->
+                    <div id="three-canvas" class="w-full h-full block opacity-0 transition-opacity duration-1000"></div>
                 </div>
             `;
-            setTimeout(initThreeJS, 100);
+            
+            // Initialize ThreeJS immediately in background so it's ready
+            setTimeout(() => {
+                initThreeJS();
+            }, 100);
+        }
+
+        function startDivineExperience() {
+            const overlay = document.getElementById('flute-overlay');
+            const ui = document.getElementById('flute-ui');
+            const canvasDiv = document.getElementById('three-canvas');
+            const audio = document.getElementById('divine-audio');
+            const loading = document.getElementById('loading');
+
+            // Fade out overlay
+            if (overlay) {
+                overlay.style.opacity = '0';
+                setTimeout(() => overlay.remove(), 1000); // Remove from DOM after fade
+            }
+
+            // Show Loading Briefly if texture loading takes time (simulated here)
+            if (loading) {
+                loading.style.opacity = '1';
+                setTimeout(() => {
+                    loading.style.opacity = '0';
+                }, 1500);
+            }
+
+            // Fade in UI and Canvas
+            if (ui) ui.classList.remove('opacity-0');
+            if (canvasDiv) canvasDiv.classList.remove('opacity-0');
+
+            // Play Audio
+            if (audio) {
+                audio.volume = 0.5; // Set volume to 50%
+                audio.play().catch(e => console.log("Audio play failed (user interaction required):", e));
+                currentAudio = audio; // Store global reference to stop it later
+            }
         }
 
         function initThreeJS() {
@@ -1929,13 +1996,7 @@
             fluteGroup.rotation.x = 0.5;
             fluteGroup.rotation.y = 2.5;
 
-            setTimeout(() => {
-                const loading = document.getElementById('loading');
-                if(loading) {
-                    loading.style.opacity = 0;
-                    setTimeout(() => loading.remove(), 1000);
-                }
-            }, 1000);
+            // REMOVED: Loading text removal here, moved to startDivineExperience logic for smoother transition
 
             const clock = new THREE.Clock();
 
