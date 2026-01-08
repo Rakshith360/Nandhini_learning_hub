@@ -1,0 +1,2425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nandhini's Learning Hub | BSc Physical Science</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- Confetti Library -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    
+    <!-- Three.js Libraries for the Flute -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- Post Processing Libraries for Bloom -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/EffectComposer.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/RenderPass.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/ShaderPass.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/CopyShader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/LuminosityHighPassShader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #f0f4f8;
+            color: #333;
+            overflow-x: hidden;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            transition: background 0.5s ease;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #888; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555; 
+        }
+
+        /* Animations */
+        .fade-in {
+            animation: fadeIn 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 3D Card Effects */
+        .perspective-container {
+            perspective: 1000px;
+        }
+        
+        .card-3d {
+            transition: all 0.4s ease;
+            transform-style: preserve-3d;
+        }
+        
+        .card-3d:hover {
+            transform: translateY(-10px) rotateX(5deg) scale(1.02);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); /* Darker shadow for space theme */
+        }
+
+        /* Data Analyst Special Styling */
+        .da-glow {
+            box-shadow: 0 0 15px rgba(236, 72, 153, 0.5);
+            border: 2px solid #ec4899;
+            background: linear-gradient(135deg, #fff0f7 0%, #fff 100%);
+        }
+        .da-glow:hover {
+            box-shadow: 0 0 30px rgba(236, 72, 153, 0.8);
+            transform: scale(1.03);
+        }
+
+        /* Career Styling */
+        .career-card {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .career-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        .flow-line {
+            width: 2px;
+            background-color: #cbd5e1;
+            height: 40px;
+            margin: 0 auto;
+        }
+        
+        .gallery-img {
+            transition: transform 0.5s ease;
+        }
+        .gallery-img:hover {
+            transform: scale(1.1);
+        }
+
+        /* Floating Animation */
+        .float-anim {
+            animation: float 6s ease-in-out infinite;
+        }
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+
+        /* Canvas Specific Styles */
+        .canvas-container {
+            background-color: #ffffff;
+            background-image: radial-gradient(#e5e7eb 1px, transparent 1px);
+            background-size: 20px 20px;
+            cursor: crosshair;
+            touch-action: none;
+        }
+        .color-btn {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            border: 2px solid white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .color-btn:hover { transform: scale(1.2); }
+        .color-btn.active { border-color: #333; transform: scale(1.1); }
+        
+        .tool-btn {
+            transition: all 0.2s;
+        }
+        .tool-btn.active {
+            background-color: #ede9fe;
+            color: #7c3aed;
+            border-color: #7c3aed;
+        }
+
+        /* --- TREE DIAGRAM CSS --- */
+        .tree-container {
+            overflow-x: auto;
+            padding: 40px 0;
+            text-align: center;
+        }
+
+        .tree {
+            display: inline-block; /* Center it */
+            white-space: nowrap;
+        }
+
+        .tree ul {
+            padding-top: 20px; 
+            position: relative;
+            transition: all 0.5s;
+            display: flex;
+            justify-content: center;
+        }
+
+        .tree li {
+            float: left; text-align: center;
+            list-style-type: none;
+            position: relative;
+            padding: 20px 10px 0 10px;
+            transition: all 0.5s;
+        }
+
+        .tree li::before, .tree li::after {
+            content: ''; 
+            position: absolute; 
+            top: 0; 
+            right: 50%;
+            border-top: 2px solid #ccc; 
+            width: 50%; 
+            height: 20px;
+        }
+        .tree li::after {
+            right: auto; left: 50%; 
+            border-left: 2px solid #ccc;
+        }
+
+        .tree li:only-child::after, .tree li:only-child::before {
+            display: none;
+        }
+        .tree li:only-child { padding-top: 0;}
+
+        .tree li:first-child::before, .tree li:last-child::after {
+            border: 0 none;
+        }
+        .tree li:last-child::before{
+            border-right: 2px solid #ccc;
+            border-radius: 0 5px 0 0;
+        }
+        .tree li:first-child::after{
+            border-radius: 5px 0 0 0;
+        }
+
+        .tree ul ul::before{
+            content: '';
+            position: absolute; top: 0; left: 50%;
+            border-left: 2px solid #ccc;
+            width: 0; height: 20px;
+        }
+
+        .tree-node {
+            border: 1px solid #e2e8f0;
+            padding: 15px 20px;
+            text-decoration: none;
+            color: #333;
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            display: inline-block;
+            border-radius: 12px;
+            transition: all 0.3s;
+            background: white;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            position: relative;
+            z-index: 10;
+            cursor: pointer;
+            min-width: 140px;
+        }
+
+        .tree-node:hover {
+            background: #fff;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px rgba(0,0,0,0.1);
+            border-color: #a5b4fc;
+        }
+        
+        .node-root { background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%); color: white !important; font-weight: bold; font-size: 1.1em; border: none; }
+        .node-study { border-top: 4px solid #3b82f6; }
+        .node-job { border-top: 4px solid #10b981; }
+        .node-skill { border-top: 4px solid #ec4899; }
+        
+        .tree li a:hover+ul li::after, 
+        .tree li a:hover+ul li::before, 
+        .tree li a:hover+ul::before, 
+        .tree li a:hover+ul ul::before{
+            border-color:  #94a3b8;
+        }
+
+        /* Quiz Styles */
+        .quiz-option {
+            transition: all 0.2s;
+        }
+        .quiz-option:hover {
+            background-color: #f3f4f6;
+        }
+        .quiz-option.selected {
+            background-color: #e0e7ff;
+            border-color: #6366f1;
+            color: #312e81;
+        }
+        .quiz-option.correct {
+            background-color: #dcfce7 !important;
+            border-color: #22c55e !important;
+            color: #14532d !important;
+        }
+        .quiz-option.wrong {
+            background-color: #fee2e2 !important;
+            border-color: #ef4444 !important;
+            color: #7f1d1d !important;
+        }
+
+        /* --- MOBILE TREE (Responsive) --- */
+        @media (max-width: 768px) {
+            .tree-container { text-align: left; padding: 20px; }
+            .tree, .tree ul, .tree li { 
+                display: block; 
+                white-space: normal; 
+                padding: 0; 
+                float: none;
+                width: 100%;
+            }
+            .tree ul { padding-left: 20px; border-left: 2px dashed #cbd5e1; margin-left: 15px; }
+            .tree li { 
+                position: relative; 
+                padding: 10px 0; 
+                box-sizing: border-box;
+            }
+            .tree li::before, .tree li::after, .tree ul ul::before { display: none; } 
+            
+            .tree li::before {
+                display: block;
+                content: '';
+                position: absolute;
+                top: 25px;
+                left: -22px;
+                width: 20px;
+                height: 2px;
+                background: #cbd5e1;
+                border: none;
+            }
+            
+            .tree-node { 
+                display: block; 
+                width: 100%; 
+                margin-bottom: 5px; 
+            }
+            .node-root { margin-bottom: 20px; margin-left: -20px; width: calc(100% + 20px); }
+        }
+
+    </style>
+</head>
+<body class="min-h-screen flex flex-col bg-slate-50">
+
+    <!-- Navigation -->
+    <nav class="bg-indigo-900 text-white shadow-lg sticky top-0 z-50 backdrop-blur-md bg-opacity-90 border-b border-indigo-700">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-2 cursor-pointer group" onclick="renderHome()">
+                <i class="fas fa-atom text-2xl text-cyan-400 group-hover:animate-spin"></i>
+                <span class="text-xl font-bold tracking-tight">Nandhini's Hub</span>
+            </div>
+            <div class="space-x-1 md:space-x-2 text-sm md:text-base flex items-center overflow-x-auto no-scrollbar">
+                <button onclick="renderHome()" class="hover:bg-indigo-800 px-3 py-1 rounded-lg transition whitespace-nowrap">Home</button>
+                <button onclick="renderQuizHub()" class="bg-violet-600 hover:bg-violet-700 text-white px-3 py-1 rounded-full transition shadow-md flex items-center space-x-1 ml-2 whitespace-nowrap">
+                    <i class="fas fa-brain text-xs"></i> <span>Quiz</span>
+                </button>
+                <button onclick="renderTools()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1 rounded-full transition shadow-md flex items-center space-x-1 ml-2 whitespace-nowrap">
+                    <i class="fas fa-tools text-xs"></i> <span>Tools</span>
+                </button>
+                <button onclick="renderAfterBsc()" class="hidden md:inline-block bg-yellow-500 hover:bg-yellow-600 text-white font-bold px-3 py-1 rounded-full transition shadow-sm ml-2 whitespace-nowrap text-xs md:text-sm">
+                   <i class="fas fa-sitemap mr-1"></i> After BSc
+                </button>
+                <button onclick="renderCabin()" class="bg-pink-600 hover:bg-pink-700 text-white px-3 py-1 rounded-full transition shadow-md flex items-center space-x-1 ml-2 whitespace-nowrap">
+                    <i class="fas fa-paint-brush text-xs"></i> <span>Cabin</span>
+                </button>
+                <button onclick="renderFlute()" class="bg-teal-600 hover:bg-teal-700 text-white px-3 py-1 rounded-full transition shadow-md flex items-center space-x-1 ml-2 whitespace-nowrap border-2 border-teal-400">
+                    <i class="fas fa-feather-alt text-xs"></i> <span>Divine</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main id="app" class="flex-grow container mx-auto px-4 py-8 relative z-10">
+        <!-- Content will be injected here by JS -->
+    </main>
+
+    <!-- Footer -->
+    <footer id="main-footer" class="bg-slate-900 text-slate-300 py-8 mt-auto z-10 relative">
+        <div class="container mx-auto text-center">
+            <div class="flex justify-center space-x-4 mb-4">
+                <i class="fas fa-star text-yellow-400"></i>
+                <i class="fas fa-star text-yellow-400"></i>
+                <i class="fas fa-star text-yellow-400"></i>
+            </div>
+            <p class="font-light">Designed with ❤️ for <span class="font-bold text-white">Nandhini</span></p>
+            <p class="text-sm mt-2 opacity-60">BSc Physical Science & Future Data Analyst</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript Data & Logic -->
+    <script>
+        // --- DATA STORE ---
+        const curriculum = {
+            1: {
+                title: "First Year: Foundation",
+                description: "Building the bedrock of Physics, Math, and Chemistry.",
+                color: "bg-blue-100",
+                icon: "fa-rocket",
+                subjects: [
+                    {
+                        name: "Physics",
+                        chapters: [
+                            { title: "Mechanics", desc: "Motion, forces, and energy." },
+                            { title: "Newton’s Laws & Motion", desc: "Understanding inertia, force, and action-reaction." },
+                            { title: "Work, Energy & Power", desc: "Conservation of energy and power calculations." },
+                            { title: "Gravitation", desc: "Planetary motion and universal gravity." },
+                            { title: "Oscillations & Waves", desc: "Simple harmonic motion and wave propagation." },
+                            { title: "Thermodynamics Basics", desc: "Heat, temperature, and laws of thermodynamics." }
+                        ]
+                    },
+                    {
+                        name: "Mathematics",
+                        chapters: [
+                            { title: "Calculus I", desc: "Introduction to differential and integral calculus." },
+                            { title: "Limits & Continuity", desc: "Foundations of calculus." },
+                            { title: "Derivatives", desc: "Rates of change and slopes." },
+                            { title: "Integration Basics", desc: "Area under curves and accumulation." },
+                            { title: "Vectors & Geometry", desc: "Vector spaces and coordinate geometry." }
+                        ]
+                    },
+                    {
+                        name: "Chemistry",
+                        chapters: [
+                            { title: "Basic Physical Chemistry", desc: "Gas laws and thermodynamics." },
+                            { title: "Atomic Structure", desc: "Orbitals, quantum numbers, and electron configuration." },
+                            { title: "Periodic Table & Bonding", desc: "Trends and chemical bond types." }
+                        ]
+                    },
+                    {
+                        name: "Computer Science",
+                        chapters: [
+                            { title: "Basics of Computers", desc: "Hardware, software, and logic gates." },
+                            { title: "Intro to Programming", desc: "Algorithms, flowcharts, and basic syntax." }
+                        ]
+                    }
+                ]
+            },
+            2: {
+                title: "Second Year: Core Concepts",
+                description: "Deepening knowledge in Electromagnetism, Multivariable Calculus, and Python.",
+                color: "bg-green-100",
+                icon: "fa-bolt",
+                subjects: [
+                    {
+                        name: "Physics",
+                        chapters: [
+                            { title: "Electricity & Magnetism", desc: "Charges, fields, and potentials." },
+                            { title: "Electric Fields & Potential", desc: "Gauss's law and potential difference." },
+                            { title: "Magnetism & Electromagnetism", desc: "Magnetic fields and induction." },
+                            { title: "AC/DC Circuits", desc: "Circuit analysis and alternating current." },
+                            { title: "Optics", desc: "Reflection, refraction, and lenses." },
+                            { title: "Wave Optics", desc: "Interference and diffraction patterns." }
+                        ]
+                    },
+                    {
+                        name: "Mathematics",
+                        chapters: [
+                            { title: "Calculus II", desc: "Multivariable calculus techniques." },
+                            { title: "Partial Derivatives", desc: "Derivatives in multiple dimensions." },
+                            { title: "Multiple Integrals", desc: "Volume and surface area calculations." },
+                            { title: "Linear Algebra & Matrices", desc: "Matrix operations, eigenvalues, and vectors." }
+                        ]
+                    },
+                    {
+                        name: "Chemistry",
+                        chapters: [
+                            { title: "Organic Chemistry Basics", desc: "Hydrocarbons and functional groups." },
+                            { title: "Chemical Thermodynamics", desc: "Energy changes in chemical reactions." },
+                            { title: "Solutions & Electrochemistry", desc: "Concentrations and electrochemical cells." }
+                        ]
+                    },
+                    {
+                        name: "Computer Science",
+                        chapters: [
+                            { title: "Python / C++ Basics", desc: "Object-oriented programming concepts." },
+                            { title: "Data Visualization", desc: "Plotting data with Matplotlib." }
+                        ]
+                    }
+                ]
+            },
+            3: {
+                title: "Third Year: Advanced",
+                description: "Mastering Quantum Mechanics, Statistical Physics, and Advanced Analysis.",
+                color: "bg-purple-100",
+                icon: "fa-microchip",
+                subjects: [
+                    {
+                        name: "Physics (Advanced)",
+                        chapters: [
+                            { title: "Quantum Mechanics", desc: "The physics of the very small." },
+                            { title: "Wave-Particle Duality", desc: "Light as both wave and particle." },
+                            { title: "Schrödinger Equation", desc: "Wave functions and probability." },
+                            { title: "Particle in a Box", desc: "Quantum confinement models." },
+                            { title: "Statistical Mechanics", desc: "Physics of large systems." },
+                            { title: "Ensembles & Partition Functions", desc: "Microstates and macrostates." },
+                            { title: "Maxwell-Boltzmann Statistics", desc: "Distribution of particles." },
+                            { title: "Solid State / Nuclear Physics", desc: "Crystal structures and atomic nuclei." }
+                        ]
+                    },
+                    {
+                        name: "Mathematics",
+                        chapters: [
+                            { title: "Differential Equations", desc: "Solving equations with derivatives." },
+                            { title: "Fourier Series & Transforms", desc: "Signal processing math." },
+                            { title: "Probability & Statistics", desc: "Data analysis foundations." }
+                        ]
+                    },
+                    {
+                        name: "Chemistry (Optional)",
+                        chapters: [
+                            { title: "Spectroscopy", desc: "Interaction of light and matter." },
+                            { title: "Quantum Chemistry", desc: "Application of QM to chemistry." }
+                        ]
+                    },
+                    {
+                        name: "Computer Science",
+                        chapters: [
+                            { title: "Scientific Computing", desc: "Numerical methods for physics." },
+                            { title: "Simulation & Modeling", desc: "Simulating physical systems." }
+                        ]
+                    }
+                ]
+            }
+        };
+
+        const learningTools = [
+            {
+                name: "ChatGPT",
+                icon: "fa-robot",
+                color: "text-emerald-600",
+                bg: "bg-emerald-50",
+                badgeColor: "text-blue-500",
+                desc: "An AI research assistant that explains complex theories, debugs Python code, and summarizes research papers.",
+                uses: ["Study Guide", "Coding Help", "Summarization"],
+                benefits: "Instant clarifications on difficult physics concepts.",
+                purpose: "AI Assistant",
+                link: "https://chat.openai.com/"
+            },
+            {
+                name: "Photomath",
+                icon: "fa-camera",
+                color: "text-red-500",
+                bg: "bg-red-50",
+                badgeColor: "text-blue-500",
+                desc: "Scan and solve math problems instantly. Great for checking calculus integration steps and algebra.",
+                uses: ["Calculus Check", "Algebra Solver", "Step-by-Step"],
+                benefits: "Visualizes the steps to solve math problems.",
+                purpose: "Math Solver",
+                link: "https://photomath.com/"
+            },
+            {
+                name: "Wolfram Alpha",
+                icon: "fa-square-root-alt",
+                color: "text-orange-600",
+                bg: "bg-orange-50",
+                badgeColor: "text-blue-500",
+                desc: "Computational intelligence engine. Solves differential equations, integrates functions, and provides physics data.",
+                uses: ["Complex Math", "Physics Data", "Chemistry Stats"],
+                benefits: "Professional-grade computational answers.",
+                purpose: "Computational Engine",
+                link: "https://www.wolframalpha.com/"
+            },
+            {
+                name: "Desmos",
+                icon: "fa-chart-line",
+                color: "text-green-600",
+                bg: "bg-green-50",
+                badgeColor: "text-blue-500",
+                desc: "Advanced graphing calculator. Perfect for visualizing functions, derivatives, and statistical data.",
+                uses: ["Graphing", "Plotting", "Visual Math"],
+                benefits: "Interactive and beautiful graph visualizations.",
+                purpose: "Graphing Calculator",
+                link: "https://www.desmos.com/"
+            },
+            {
+                name: "GeoGebra",
+                icon: "fa-shapes",
+                color: "text-indigo-600",
+                bg: "bg-indigo-50",
+                badgeColor: "text-blue-500",
+                desc: "Dynamic mathematics software for all levels. Joins geometry, algebra, graphing, and calculus.",
+                uses: ["Geometry", "3D Graphing", "Simulations"],
+                benefits: "Great for understanding 3D vectors and planes.",
+                purpose: "Math Suite",
+                link: "https://www.geogebra.org/"
+            },
+            {
+                name: "PhET Simulations",
+                icon: "fa-flask",
+                color: "text-yellow-600",
+                bg: "bg-yellow-50",
+                badgeColor: "text-blue-500",
+                desc: "Interactive simulations for physics and chemistry. visualize circuits, waves, and quantum phenomena.",
+                uses: ["Virtual Labs", "Physics Sims", "Experimentation"],
+                benefits: "Safe environment to test physical laws.",
+                purpose: "Science Sims",
+                link: "https://phet.colorado.edu/"
+            },
+            {
+                name: "Symbolab",
+                icon: "fa-superscript",
+                color: "text-red-600",
+                bg: "bg-red-50",
+                badgeColor: "text-blue-500",
+                desc: "Equation search and math solver. Excellent for practicing integrals and derivatives with steps.",
+                uses: ["Step-by-step", "Practice", "Equation Search"],
+                benefits: "Helps verify homework answers with logic.",
+                purpose: "Math Education",
+                link: "https://www.symbolab.com/"
+            },
+            {
+                name: "Notion",
+                icon: "fa-book-open",
+                color: "text-slate-700",
+                bg: "bg-slate-100",
+                badgeColor: "text-blue-500",
+                desc: "All-in-one workspace. Organize your BSc notes, create study schedules, and track assignment deadlines.",
+                uses: ["Note Taking", "Planning", "Organization"],
+                benefits: "Keeps your academic life structured.",
+                purpose: "Productivity",
+                link: "https://www.notion.so/"
+            }
+        ];
+
+        const careerPaths = {
+            dataAnalyst: {
+                title: "Data Analyst Roadmap",
+                theme: "pink",
+                icon: "fa-chart-line",
+                blobColor: "bg-pink-500",
+                gradient: "from-gray-900 to-pink-900",
+                intro: "Nandhini, this is your chosen path! As a Data Analyst, you turn raw data into meaningful insights to help businesses make decisions.",
+                why: "Physics teaches you <strong>problem solving</strong> and <strong>math</strong>. Data Analysis is just applying that logic to business numbers.",
+                salary: { fresher: "₹3 - 6 LPA", mid: "₹8 - 15 LPA", senior: "₹20+ LPA" },
+                images: [
+                     "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=600",
+                     "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=600",
+                     "https://images.unsplash.com/photo-1543286386-713df548e9cc?auto=format&fit=crop&q=80&w=600",
+                     "https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?auto=format&fit=crop&q=80&w=600"
+                ],
+                steps: [
+                    { skill: "Excel (Advanced)", desc: "Master VLOOKUP, Pivot Tables, and Dashboards.", icon: "fa-table" },
+                    { skill: "SQL (Databases)", desc: "Learn to query databases. 'Select * From Users' is key.", icon: "fa-database" },
+                    { skill: "Python / R", desc: "Use Pandas and NumPy libraries (from 2nd Year!).", icon: "fa-code" },
+                    { skill: "Visualization", desc: "PowerBI or Tableau to make beautiful charts.", icon: "fa-chart-pie" }
+                ]
+            },
+            teaching: {
+                title: "Teaching & Research Roadmap",
+                theme: "indigo",
+                icon: "fa-chalkboard-teacher",
+                blobColor: "bg-indigo-500",
+                gradient: "from-blue-900 to-indigo-900",
+                intro: "The path of intellectual prestige. Becoming a Subject Matter Expert, a Professor, or a Scientist.",
+                why: "Your strong foundation in core physics makes you an ideal candidate to shape the next generation.",
+                steps: [
+                    { skill: "Crack Entrance Exams", desc: "IIT-JAM or JEST for Masters.", icon: "fa-file-alt" },
+                    { skill: "Master's Degree (M.Sc)", desc: "2-year program in Physics or Astrophysics.", icon: "fa-graduation-cap" },
+                    { skill: "Qualify NET / GATE", desc: "For PhD and Lectureship eligibility.", icon: "fa-certificate" }
+                ]
+            },
+            govt: {
+                title: "Govt. Jobs Roadmap",
+                theme: "emerald",
+                icon: "fa-building-columns",
+                blobColor: "bg-emerald-500",
+                gradient: "from-green-900 to-emerald-900",
+                intro: "Stability, Power, and Service. Government jobs are highly coveted for security.",
+                why: "Science students excel here due to strong analytical and math skills.",
+                steps: [
+                    { skill: "Select Exam", desc: "UPSC (CSE), SSC CGL, or Banking.", icon: "fa-map-signs" },
+                    { skill: "Master Quant & Reasoning", desc: "Practice Arithmetic and Logical Reasoning.", icon: "fa-calculator" },
+                    { skill: "General Awareness", desc: "Focus on Current Affairs and Economy.", icon: "fa-globe" }
+                ]
+            }
+        };
+
+        const bscTreeData = {
+            title: "🎓 After BSc Physical Science",
+            rootClass: "node-root",
+            children: [
+                {
+                    title: "Higher Studies 📚",
+                    class: "node-study",
+                    detail: "Specialized Masters & PhD programs",
+                    children: [
+                        { title: "M.Sc Physics", detail: "Exams: IIT JAM, JEST. Scope: Research, Professor." },
+                        { title: "M.Sc Comp. Sci", detail: "Exams: NIMCET, CUET. Scope: Software Engineer." },
+                        { title: "MBA", detail: "Exams: CAT, XAT. Scope: Management, Finance." },
+                        { title: "B.Ed", detail: "Scope: School Teaching (TGT/PGT)." }
+                    ]
+                },
+                {
+                    title: "Job Opportunities 💼",
+                    class: "node-job",
+                    detail: "Immediate employment sectors",
+                    children: [
+                        { 
+                            title: "Govt. Jobs", 
+                            detail: "UPSC, SSC CGL, Banking, Railways.",
+                            children: [
+                                { title: "Civil Services" },
+                                { title: "Defense (CDS)" }
+                            ]
+                        },
+                        { title: "Private Sector", detail: "TCS Ignite, Wipro WILP, Infosys (BSc Role)." },
+                        { title: "Research Assistant", detail: "Labs in DRDO, ISRO (Project basis)." }
+                    ]
+                },
+                {
+                    title: "Skill Upgrades 🚀",
+                    class: "node-skill",
+                    detail: "Modern skills for high-paying roles",
+                    children: [
+                        { title: "Data Analyst", detail: "Learn: SQL, Python, PowerBI. (Your Goal!)" },
+                        { title: "Web Developer", detail: "Learn: HTML, CSS, React, Node.js." },
+                        { title: "Digital Marketing", detail: "SEO, Content Strategy." }
+                    ]
+                }
+            ]
+        };
+
+        // --- GLOBAL APP STATE ---
+        const app = document.getElementById('app');
+        const footer = document.getElementById('main-footer');
+        let fluteAnimationId = null; 
+        let fluteResizeHandler = null; 
+        let spaceAnimationId = null; // New ID for space animation
+        let spaceResizeHandler = null; // New resize handler for space
+        let activeQuizYear = null;    // STORE ACTIVE QUIZ CONTEXT
+        let activeQuizChapter = null; // STORE ACTIVE QUIZ CONTEXT
+
+        // --- CLEANUP FUNCTION ---
+        function cleanup() {
+            if (fluteAnimationId) {
+                cancelAnimationFrame(fluteAnimationId);
+                fluteAnimationId = null;
+            }
+            if (fluteResizeHandler) {
+                window.removeEventListener('resize', fluteResizeHandler);
+                fluteResizeHandler = null;
+            }
+            // CLEAN UP SPACE ANIMATION
+            stopSpaceBackground();
+
+            app.classList.remove('p-0', 'm-0', 'w-full', 'max-w-none');
+            app.classList.add('container', 'mx-auto', 'px-4', 'py-8');
+            document.body.style.backgroundColor = '#f0f4f8';
+            document.body.style.backgroundImage = 'none'; // Reset any BG images
+            document.body.style.overflow = 'auto'; 
+            footer.style.display = 'block'; 
+        }
+
+        // --- SPACE BACKGROUND LOGIC (New Feature) ---
+        function initSpaceBackground() {
+            // Remove existing if any
+            const existing = document.getElementById('space-bg-canvas');
+            if(existing) existing.remove();
+
+            // Create Canvas
+            const canvas = document.createElement('canvas');
+            canvas.id = 'space-bg-canvas';
+            canvas.style.position = 'fixed';
+            canvas.style.top = '0';
+            canvas.style.left = '0';
+            canvas.style.width = '100%';
+            canvas.style.height = '100%';
+            canvas.style.zIndex = '-1'; // Behind everything
+            // Deep space gradient
+            canvas.style.background = 'radial-gradient(ellipse at bottom, #1B2735 0%, #090A0F 100%)';
+            document.body.appendChild(canvas);
+            
+            // Set body background color to transparent to see canvas
+            document.body.style.backgroundColor = 'transparent';
+
+            const ctx = canvas.getContext('2d');
+            let width, height;
+
+            // Resize Function
+            const resize = () => {
+                width = canvas.width = window.innerWidth;
+                height = canvas.height = window.innerHeight;
+            };
+            window.addEventListener('resize', resize);
+            resize();
+            spaceResizeHandler = resize;
+
+            // Generate Stars
+            const stars = [];
+            const numStars = 300;
+            for(let i=0; i<numStars; i++) {
+                stars.push({
+                    x: Math.random() * width,
+                    y: Math.random() * height,
+                    r: Math.random() * 1.5,
+                    alpha: Math.random(),
+                    speed: Math.random() * 0.2 + 0.05,
+                    twinkle: Math.random() * 0.05
+                });
+            }
+
+            // Generate Planets
+            const planets = [
+                { x: width * 0.1, y: height * 0.3, r: 60, color: ['#ff9a9e', '#fecfef'], speedX: 0.05, speedY: 0.02 },
+                { x: width * 0.85, y: height * 0.8, r: 120, color: ['#4facfe', '#00f2fe'], speedX: -0.03, speedY: -0.01 },
+                { x: width * 0.6, y: height * 0.2, r: 25, color: ['#f093fb', '#f5576c'], speedX: -0.08, speedY: 0.02 }
+            ];
+
+            // Generate Galaxy Particles
+            const galaxyParticles = [];
+            const numGalaxy = 150;
+            const galaxyCX = width * 0.5;
+            const galaxyCY = height * 0.5;
+            for(let i=0; i<numGalaxy; i++) {
+                const angle = Math.random() * Math.PI * 2;
+                const dist = Math.random() * 200 + 50;
+                galaxyParticles.push({
+                    angle: angle,
+                    dist: dist,
+                    speed: (1 / dist) * 100, // Inner moves faster
+                    size: Math.random() * 2,
+                    color: `hsla(${Math.random() * 60 + 200}, 80%, 70%, 0.8)`
+                });
+            }
+
+            function draw() {
+                ctx.clearRect(0, 0, width, height);
+
+                // Draw Galaxy (Subtle rotating nebula in center)
+                ctx.save();
+                ctx.translate(width/2, height/2);
+                // Rotate entire galaxy slowly
+                const time = Date.now() * 0.0001;
+                ctx.rotate(time);
+                
+                galaxyParticles.forEach(p => {
+                    p.angle += 0.001; // Particle orbit
+                    const px = Math.cos(p.angle) * p.dist;
+                    const py = Math.sin(p.angle) * p.dist;
+                    
+                    ctx.fillStyle = p.color;
+                    ctx.beginPath();
+                    ctx.arc(px, py * 0.6, p.size, 0, Math.PI * 2); // Flattened y for perspective
+                    ctx.fill();
+                });
+                ctx.restore();
+
+                // Draw Stars
+                ctx.fillStyle = '#ffffff';
+                stars.forEach(star => {
+                    // Twinkle
+                    if (Math.random() > 0.98) star.alpha = Math.random();
+                    
+                    ctx.globalAlpha = star.alpha;
+                    ctx.beginPath();
+                    ctx.arc(star.x, star.y, star.r, 0, Math.PI * 2);
+                    ctx.fill();
+                    
+                    // Move
+                    star.y -= star.speed;
+                    if(star.y < 0) {
+                        star.y = height;
+                        star.x = Math.random() * width;
+                    }
+                });
+                ctx.globalAlpha = 1;
+
+                // Draw Planets
+                planets.forEach(p => {
+                    // Create gradient
+                    const grad = ctx.createRadialGradient(p.x - p.r/3, p.y - p.r/3, p.r/10, p.x, p.y, p.r);
+                    grad.addColorStop(0, p.color[0]);
+                    grad.addColorStop(1, 'rgba(0,0,0,0.1)'); // Fade out
+
+                    // Glow
+                    ctx.shadowBlur = 20;
+                    ctx.shadowColor = p.color[0];
+                    
+                    ctx.fillStyle = grad;
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    ctx.shadowBlur = 0; // Reset
+
+                    // Move
+                    p.x += p.speedX;
+                    p.y += p.speedY;
+                    
+                    // Bounce subtly off screen (or wrap, let's wrap for smoothness)
+                    if(p.x > width + p.r) p.x = -p.r;
+                    if(p.x < -p.r) p.x = width + p.r;
+                    if(p.y > height + p.r) p.y = -p.r;
+                    if(p.y < -p.r) p.y = height + p.r;
+                });
+
+                spaceAnimationId = requestAnimationFrame(draw);
+            }
+
+            draw();
+        }
+
+        function stopSpaceBackground() {
+            if (spaceAnimationId) {
+                cancelAnimationFrame(spaceAnimationId);
+                spaceAnimationId = null;
+            }
+            if (spaceResizeHandler) {
+                window.removeEventListener('resize', spaceResizeHandler);
+                spaceResizeHandler = null;
+            }
+            const canvas = document.getElementById('space-bg-canvas');
+            if (canvas) canvas.remove();
+        }
+
+        // --- CONFETTI LOGIC ---
+        function fireConfetti() {
+            var count = 200;
+            var defaults = { origin: { y: 0.7 } };
+            function fire(particleRatio, opts) {
+                confetti(Object.assign({}, defaults, opts, {
+                    particleCount: Math.floor(count * particleRatio)
+                }));
+            }
+            fire(0.25, { spread: 26, startVelocity: 55 });
+            fire(0.2, { spread: 60 });
+            fire(0.35, { spread: 100, decay: 0.91, scalar: 0.8 });
+            fire(0.1, { spread: 120, startVelocity: 25, decay: 0.92, scalar: 1.2 });
+            fire(0.1, { spread: 120, startVelocity: 45 });
+        }
+
+        // --- RENDER FUNCTIONS ---
+        function renderHome() {
+            cleanup();
+            
+            // --- INITIATE SPACE ANIMATION ---
+            initSpaceBackground();
+
+            app.innerHTML = `
+                <div class="fade-in space-y-16 pb-12 relative z-10">
+                    <!-- Hero Section -->
+                    <div class="text-center py-16 bg-white/10 backdrop-blur-md border border-white/20 text-white rounded-[3rem] shadow-2xl relative overflow-hidden">
+                        <div class="relative z-10">
+                            <h1 class="text-5xl md:text-7xl font-bold mb-6 tracking-tight float-anim text-transparent bg-clip-text bg-gradient-to-r from-blue-200 via-purple-200 to-pink-200">Welcome, Nandhini!</h1>
+                            <p class="text-xl md:text-2xl text-gray-200 max-w-2xl mx-auto">Your personalized gateway to mastering <br> <span class="font-semibold text-yellow-300">BSc Physical Science</span>.</p>
+                            <div class="mt-10 flex flex-wrap justify-center gap-4">
+                                <button onclick="renderQuizHub()" class="bg-white text-indigo-900 px-8 py-3 rounded-full font-bold shadow-lg hover:bg-gray-200 transition transform hover:-translate-y-1 flex items-center gap-2">
+                                     <i class="fas fa-brain"></i> Take a Quiz
+                                </button>
+                                <button onclick="scrollToSection('curriculum-section')" class="bg-transparent border-2 border-white text-white px-8 py-3 rounded-full font-bold shadow-lg hover:bg-white/10 transition transform hover:-translate-y-1">Explore Syllabus</button>
+                                <button onclick="renderAfterBsc()" class="bg-yellow-400 text-indigo-900 px-8 py-3 rounded-full font-bold shadow-lg hover:bg-yellow-500 transition transform hover:-translate-y-1 flex items-center gap-2">
+                                    <i class="fas fa-sitemap"></i> After BSc Roadmap
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- WHY THIS COURSE Section (Encouragement) -->
+                    <div id="why-section" class="max-w-6xl mx-auto">
+                        <div class="text-center mb-10">
+                            <!-- TEXT COLOR CHANGE FOR DARK BACKGROUND -->
+                            <h2 class="text-3xl font-bold text-white">Why BSc Physical Science is the Best Choice?</h2>
+                            <div class="w-20 h-1 bg-indigo-400 mx-auto mt-4 rounded-full"></div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                            <div class="bg-white/95 backdrop-blur-sm p-8 rounded-2xl shadow-lg border-b-4 border-blue-500 hover:shadow-2xl transition transform hover:-translate-y-2">
+                                <div class="w-14 h-14 bg-blue-100 rounded-full flex items-center justify-center mb-6 text-2xl text-blue-600">
+                                    <i class="fas fa-brain"></i>
+                                </div>
+                                <h3 class="text-xl font-bold text-gray-800 mb-3">Master Problem Solver</h3>
+                                <p class="text-gray-600 leading-relaxed">
+                                    You don't just memorize; you learn <strong>how to think</strong>. Physics and Math train your brain to break down complex problems—a skill every top company wants.
+                                </p>
+                            </div>
+                            <div class="bg-white/95 backdrop-blur-sm p-8 rounded-2xl shadow-lg border-b-4 border-purple-500 hover:shadow-2xl transition transform hover:-translate-y-2">
+                                <div class="w-14 h-14 bg-purple-100 rounded-full flex items-center justify-center mb-6 text-2xl text-purple-600">
+                                    <i class="fas fa-layer-group"></i>
+                                </div>
+                                <h3 class="text-xl font-bold text-gray-800 mb-3">Versatile Career Options</h3>
+                                <p class="text-gray-600 leading-relaxed">
+                                    You are not limited! You can go into <strong>IT/Tech</strong> (Data Science, Coding), <strong>Research</strong> (ISRO, DRDO), <strong>Teaching</strong>, or <strong>Govt Administration</strong>.
+                                </p>
+                            </div>
+                            <div class="bg-white/95 backdrop-blur-sm p-8 rounded-2xl shadow-lg border-b-4 border-green-500 hover:shadow-2xl transition transform hover:-translate-y-2">
+                                <div class="w-14 h-14 bg-green-100 rounded-full flex items-center justify-center mb-6 text-2xl text-green-600">
+                                    <i class="fas fa-laptop-code"></i>
+                                </div>
+                                <h3 class="text-xl font-bold text-gray-800 mb-3">Tech-Ready Foundation</h3>
+                                <p class="text-gray-600 leading-relaxed">
+                                    With Computer Science and Math in your syllabus, you have a huge head start in the tech world compared to pure science degrees.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="mt-8 text-center bg-white/10 backdrop-blur-md p-6 rounded-xl border border-white/20">
+                            <p class="text-indigo-200 font-medium text-lg">"The universe is written in the language of mathematics, and you are learning to read it." 🌌</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Curriculum Section (3D Boxes) -->
+                    <div id="curriculum-section" class="perspective-container">
+                        <div class="text-center mb-12">
+                            <!-- TEXT COLOR CHANGE FOR DARK BACKGROUND -->
+                            <h2 class="text-4xl font-bold text-white mb-2">Your Academic Timeline</h2>
+                            <p class="text-gray-300">Select a year to explore your subjects</p>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-10 px-4">
+                            <!-- Year 1 -->
+                            <div onclick="renderYear(1)" class="card-3d bg-white/95 backdrop-blur-sm rounded-3xl p-8 cursor-pointer relative overflow-hidden group border border-gray-100">
+                                <div class="absolute top-0 right-0 w-32 h-32 bg-blue-100 rounded-full -mr-16 -mt-16 transition group-hover:scale-150 duration-500"></div>
+                                <div class="relative z-10">
+                                    <div class="text-5xl font-bold text-blue-200 mb-4 group-hover:text-blue-500 transition">01</div>
+                                    <h3 class="text-2xl font-bold text-gray-800 mb-2">First Year</h3>
+                                    <p class="text-blue-600 font-semibold mb-4">Foundation Phase</p>
+                                    <ul class="text-sm text-gray-500 space-y-2 mb-6">
+                                        <li><i class="fas fa-check text-blue-400 mr-2"></i>Mechanics & Gravitation</li>
+                                        <li><i class="fas fa-check text-blue-400 mr-2"></i>Calculus & Limits</li>
+                                        <li><i class="fas fa-check text-blue-400 mr-2"></i>Basic Chemistry</li>
+                                    </ul>
+                                    <div class="w-full bg-blue-50 text-blue-600 py-2 rounded-lg text-center font-bold group-hover:bg-blue-600 group-hover:text-white transition">View Syllabus</div>
+                                </div>
+                            </div>
+                            <!-- Year 2 -->
+                            <div onclick="renderYear(2)" class="card-3d bg-white/95 backdrop-blur-sm rounded-3xl p-8 cursor-pointer relative overflow-hidden group border border-gray-100">
+                                <div class="absolute top-0 right-0 w-32 h-32 bg-green-100 rounded-full -mr-16 -mt-16 transition group-hover:scale-150 duration-500"></div>
+                                <div class="relative z-10">
+                                    <div class="text-5xl font-bold text-green-200 mb-4 group-hover:text-green-500 transition">02</div>
+                                    <h3 class="text-2xl font-bold text-gray-800 mb-2">Second Year</h3>
+                                    <p class="text-green-600 font-semibold mb-4">Core Concepts</p>
+                                    <ul class="text-sm text-gray-500 space-y-2 mb-6">
+                                        <li><i class="fas fa-check text-green-400 mr-2"></i>Electricity & Magnetism</li>
+                                        <li><i class="fas fa-check text-green-400 mr-2"></i>Multivariable Calculus</li>
+                                        <li><i class="fas fa-check text-green-400 mr-2"></i>Python Programming</li>
+                                    </ul>
+                                    <div class="w-full bg-green-50 text-green-600 py-2 rounded-lg text-center font-bold group-hover:bg-green-600 group-hover:text-white transition">View Syllabus</div>
+                                </div>
+                            </div>
+                            <!-- Year 3 -->
+                            <div onclick="renderYear(3)" class="card-3d bg-white/95 backdrop-blur-sm rounded-3xl p-8 cursor-pointer relative overflow-hidden group border border-gray-100">
+                                <div class="absolute top-0 right-0 w-32 h-32 bg-purple-100 rounded-full -mr-16 -mt-16 transition group-hover:scale-150 duration-500"></div>
+                                <div class="relative z-10">
+                                    <div class="text-5xl font-bold text-purple-200 mb-4 group-hover:text-purple-500 transition">03</div>
+                                    <h3 class="text-2xl font-bold text-gray-800 mb-2">Third Year</h3>
+                                    <p class="text-purple-600 font-semibold mb-4">Advanced & Modern</p>
+                                    <ul class="text-sm text-gray-500 space-y-2 mb-6">
+                                        <li><i class="fas fa-check text-purple-400 mr-2"></i>Quantum Mechanics</li>
+                                        <li><i class="fas fa-check text-purple-400 mr-2"></i>Statistical Physics</li>
+                                        <li><i class="fas fa-check text-purple-400 mr-2"></i>Scientific Computing</li>
+                                    </ul>
+                                    <div class="w-full bg-purple-50 text-purple-600 py-2 rounded-lg text-center font-bold group-hover:bg-purple-600 group-hover:text-white transition">View Syllabus</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Career Roadmap Section -->
+                    <div id="career-section" class="pt-10">
+                        <div class="text-center mb-10">
+                            <!-- TEXT COLOR CHANGE FOR DARK BACKGROUND -->
+                            <h2 class="text-3xl font-bold text-white">Life After BSc</h2>
+                            <p class="text-gray-300">Your degree opens three major doors</p>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <div class="bg-white/10 backdrop-blur border border-white/20 text-white px-10 py-4 rounded-full shadow-lg text-xl font-bold mb-4 transform hover:scale-105 transition">
+                                <i class="fas fa-graduation-cap mr-2 text-yellow-300"></i> Graduation
+                            </div>
+                            <div class="flow-line h-12 border-l-2 border-dashed border-slate-400"></div>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-6xl px-4">
+                                <div onclick="fireConfetti(); renderCareerPage('teaching')" class="career-card bg-white/95 backdrop-blur-sm p-6 rounded-2xl shadow-md border-t-4 border-indigo-500 text-center hover:bg-indigo-50">
+                                    <div class="w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                        <i class="fas fa-chalkboard-user text-3xl text-indigo-600"></i>
+                                    </div>
+                                    <h4 class="font-bold text-lg text-indigo-900 mb-2">Masters / Teaching</h4>
+                                    <p class="text-sm text-gray-500">M.Sc, PhD, Professor</p>
+                                </div>
+                                <div onclick="fireConfetti(); renderCareerPage('dataAnalyst')" class="da-glow p-8 rounded-2xl cursor-pointer text-center relative z-10 transform transition">
+                                    <div class="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-pink-600 text-white text-xs font-bold px-4 py-1 rounded-full shadow-lg animate-bounce">NANDHINI'S GOAL</div>
+                                    <div class="w-20 h-20 bg-pink-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                        <i class="fas fa-chart-line text-4xl text-pink-600"></i>
+                                    </div>
+                                    <h3 class="font-bold text-2xl text-pink-700 mb-2">Data Analyst</h3>
+                                    <p class="text-sm text-gray-600 mb-4">High Growth • Analytics • Corporate</p>
+                                    <button class="bg-pink-600 text-white px-6 py-2 rounded-full text-sm hover:bg-pink-700 transition shadow-md">See Roadmap &rarr;</button>
+                                </div>
+                                <div onclick="fireConfetti(); renderCareerPage('govt')" class="career-card bg-white/95 backdrop-blur-sm p-6 rounded-2xl shadow-md border-t-4 border-emerald-500 text-center hover:bg-emerald-50">
+                                     <div class="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                        <i class="fas fa-building-columns text-3xl text-emerald-600"></i>
+                                    </div>
+                                    <h4 class="font-bold text-lg text-emerald-900 mb-2">Govt Exams</h4>
+                                    <p class="text-sm text-gray-500">UPSC / Banking / SSC</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            window.scrollTo(0,0);
+        }
+
+        function renderTools() {
+            cleanup();
+            
+            const toolsHtml = learningTools.map(tool => `
+                <div class="bg-white rounded-2xl p-6 shadow-sm hover:shadow-lg transition-all duration-300 border border-slate-100 flex flex-col h-full group">
+                    <div class="flex items-start justify-between mb-4">
+                        <div class="w-14 h-14 ${tool.bg} rounded-xl flex items-center justify-center text-2xl ${tool.color} group-hover:scale-110 transition-transform duration-300">
+                            <i class="fas ${tool.icon}"></i>
+                        </div>
+                        <i class="fas fa-check-circle ${tool.badgeColor} text-lg" title="Verified Tool"></i>
+                    </div>
+                    
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">${tool.name}</h3>
+                    <p class="text-gray-600 text-sm mb-4 leading-relaxed flex-grow">${tool.desc}</p>
+                    
+                    <div class="space-y-3 mb-6">
+                        <div>
+                            <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Uses</span>
+                            <div class="flex flex-wrap gap-2 mt-1">
+                                ${tool.uses.map(use => `<span class="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-md font-medium">${use}</span>`).join('')}
+                            </div>
+                        </div>
+                        <div>
+                            <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Purpose</span>
+                            <p class="text-xs font-medium ${tool.color}">${tool.purpose}</p>
+                        </div>
+                    </div>
+
+                    <a href="${tool.link}" target="_blank" class="block w-full text-center py-2.5 rounded-lg bg-slate-50 text-slate-700 font-semibold hover:bg-indigo-600 hover:text-white transition-colors duration-300">
+                        Try Now <i class="fas fa-external-link-alt ml-1 text-xs opacity-70"></i>
+                    </a>
+                </div>
+            `).join('');
+
+            app.innerHTML = `
+                <div class="fade-in max-w-7xl mx-auto">
+                    <!-- Header -->
+                    <button onclick="renderHome()" class="mb-6 text-gray-500 hover:text-indigo-600 font-medium flex items-center transition">
+                        <i class="fas fa-arrow-left mr-2"></i> Back to Hub
+                    </button>
+                    
+                    <div class="text-center mb-12">
+                        <h1 class="text-3xl md:text-5xl font-bold text-gray-800 mb-4">
+                            <span class="bg-clip-text text-transparent bg-gradient-to-r from-emerald-600 to-teal-500">Digital Learning Toolkit</span>
+                        </h1>
+                        <p class="text-lg text-gray-500 max-w-2xl mx-auto">
+                            A curated collection of AI apps and computational tools to supercharge your Physics & Math studies.
+                        </p>
+                    </div>
+
+                    <!-- Tools Grid -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 px-2">
+                        ${toolsHtml}
+                    </div>
+
+                    <!-- Suggestion Box -->
+                    <div class="mt-16 bg-gradient-to-r from-indigo-50 to-blue-50 rounded-2xl p-8 text-center border border-indigo-100">
+                        <h3 class="text-xl font-bold text-indigo-900 mb-2">Need a specific tool?</h3>
+                        <p class="text-indigo-700 mb-4">These tools are verified for academic accuracy in BSc Physical Science.</p>
+                        <button onclick="window.open('https://chat.openai.com/')" class="bg-white text-indigo-600 px-6 py-2 rounded-full font-bold shadow-md hover:shadow-lg transition">
+                            Ask AI for More
+                        </button>
+                    </div>
+                </div>
+            `;
+            window.scrollTo(0,0);
+        }
+
+
+        // --- INTELLIGENT QUIZ GENERATOR ---
+        // Enhanced Question Bank to Reduce Repetition
+        const quizData = {
+            "First Year": {
+                "Mechanics & Gravitation": [
+                    {
+                        template: (r) => {
+                            const m = r(2, 10); const a = r(2, 5);
+                            return {
+                                q: `What is the force required to accelerate a ${m}kg mass at ${a}m/s²?`,
+                                opts: [`${m*a} N`, `${m+a} N`, `${m/a} N`, `${m*a*2} N`],
+                                ans: 0,
+                                exp: `Newton's Second Law: F = ma. ${m} * ${a} = ${m*a} N.`
+                            }
+                        }
+                    },
+                    {
+                        template: (r) => {
+                            return {
+                                q: `If the distance between two masses is doubled, the gravitational force between them becomes:`,
+                                opts: [`Four times`, `Doubled`, `One-fourth`, `Halved`],
+                                ans: 2,
+                                exp: `Gravitational force is inversely proportional to the square of the distance ($F \\propto 1/r^2$).`
+                            }
+                        }
+                    },
+                    {
+                         template: (r) => {
+                             const u = r(10, 20); const t = r(2, 5);
+                             return {
+                                 q: `A particle starts with velocity ${u} m/s and moves with constant acceleration a=2m/s². What is velocity after ${t}s?`,
+                                 opts: [`${u + 2*t} m/s`, `${u - 2*t} m/s`, `${u*t} m/s`, `${u/t} m/s`],
+                                 ans: 0,
+                                 exp: `v = u + at. v = ${u} + (2*${t}) = ${u + 2*t} m/s.`
+                             }
+                         }
+                    },
+                    {
+                        template: (r) => {
+                            return {
+                                q: "Kepler's Second Law states that the line joining the planet to the Sun sweeps out equal ______ in equal intervals of time.",
+                                opts: ["Distances", "Areas", "Volumes", "Angles"],
+                                ans: 1,
+                                exp: "Kepler's Second Law is also known as the Law of Areas, based on conservation of angular momentum."
+                            }
+                        }
+                    },
+                    {
+                        template: (r) => {
+                            return {
+                                q: "Which of the following is a scalar quantity?",
+                                opts: ["Velocity", "Force", "Displacement", "Speed"],
+                                ans: 3,
+                                exp: "Speed has magnitude but no direction, making it a scalar. The others are vectors."
+                            }
+                        }
+                    }
+                ],
+                "Calculus & Limits": [
+                    {
+                        template: (r) => {
+                            return {
+                                q: "What is the limit of sin(x)/x as x approaches 0?",
+                                opts: ["0", "1", "Infinity", "Undefined"],
+                                ans: 1,
+                                exp: "This is a standard limit theorem: lim(x->0) sin(x)/x = 1."
+                            }
+                        }
+                    },
+                    {
+                        template: (r) => {
+                             const n = r(2, 5);
+                             return {
+                                 q: `What is the derivative of x^${n} with respect to x?`,
+                                 opts: [`${n}x^${n-1}`, `x^${n+1}/${n+1}`, `${n}x`, `${n-1}x^${n}`],
+                                 ans: 0,
+                                 exp: `The power rule states d/dx(x^n) = nx^(n-1).`
+                             }
+                        }
+                    },
+                    {
+                        template: (r) => {
+                            return {
+                                q: "If f(x) = ln(x), what is f'(x)?",
+                                opts: ["e^x", "1/x", "x", "ln(x^2)"],
+                                ans: 1,
+                                exp: "The derivative of natural log ln(x) is 1/x."
+                            }
+                        }
+                    }
+                ],
+                "Basic Chemistry": [
+                    {
+                        template: (r) => {
+                            return {
+                                q: "Which quantum number describes the shape of an orbital?",
+                                opts: ["Principal (n)", "Azimuthal (l)", "Magnetic (m)", "Spin (s)"],
+                                ans: 1,
+                                exp: "The Azimuthal quantum number (l) determines the orbital angular momentum and the shape (s, p, d, f)."
+                            }
+                        }
+                    },
+                    {
+                        template: (r) => {
+                            return {
+                                q: "According to Boyle's Law, at constant temperature, pressure is inversely proportional to:",
+                                opts: ["Volume", "Mass", "Density", "Energy"],
+                                ans: 0,
+                                exp: "Boyle's Law: P ∝ 1/V when T is constant."
+                            }
+                        }
+                    },
+                    {
+                        template: (r) => {
+                            return {
+                                q: "Which element has the highest electronegativity?",
+                                opts: ["Oxygen", "Chlorine", "Fluorine", "Nitrogen"],
+                                ans: 2,
+                                exp: "Fluorine is the most electronegative element on the periodic table."
+                            }
+                        }
+                    }
+                ]
+            },
+            "Second Year": {
+                "Electricity & Magnetism": [
+                    {
+                        template: (r) => {
+                             const v = r(10, 240); const res = r(2, 10);
+                             return {
+                                 q: `According to Ohm's law, what is the current if Voltage is ${v}V and Resistance is ${res}Ω?`,
+                                 opts: [`${Math.round(v/res*10)/10} A`, `${v*res} A`, `${Math.round(res/v*100)/100} A`, `${v+res} A`],
+                                 ans: 0,
+                                 exp: `Ohm's Law: I = V/R. ${v} / ${res} = ${v/res} A.`
+                             }
+                        }
+                    },
+                    {
+                        template: (r) => {
+                            return {
+                                q: "Gauss's Law relates the electric flux through a closed surface to:",
+                                opts: ["The electric field outside", "The charge enclosed", "The potential difference", "The magnetic field"],
+                                ans: 1,
+                                exp: "Φ = Q_enclosed / ε₀. Flux depends on the enclosed charge."
+                            }
+                        }
+                    },
+                    {
+                         template: (r) => {
+                            return {
+                                q: "The unit of Capacitance is:",
+                                opts: ["Farad", "Henry", "Weber", "Tesla"],
+                                ans: 0,
+                                exp: "Farad (F) is the SI unit of capacitance."
+                            }
+                        }
+                    }
+                ],
+                "Multivariable Calculus": [
+                    {
+                        template: (r) => {
+                            return {
+                                q: "The gradient of a scalar field produces a:",
+                                opts: ["Scalar field", "Vector field", "Tensor", "Constant"],
+                                ans: 1,
+                                exp: "The gradient operator (∇) acting on a scalar function produces a vector field representing the direction of steepest ascent."
+                            }
+                        }
+                    },
+                    {
+                         template: (r) => {
+                            return {
+                                q: "Which theorem relates a line integral to a surface integral?",
+                                opts: ["Green's Theorem", "Divergence Theorem", "Stokes' Theorem", "Pythagoras Theorem"],
+                                ans: 2,
+                                exp: "Stokes' Theorem relates the line integral of a vector field over a loop to the surface integral of its curl."
+                            }
+                        }
+                    }
+                ],
+                "Python Programming": [
+                    {
+                        template: (r) => {
+                            return {
+                                q: "What is the output of the following Python snippet: print([1, 2, 3][::-1])",
+                                opts: ["[1, 2, 3]", "[3, 2, 1]", "Error", "[3, 2]"],
+                                ans: 1,
+                                exp: "The slice [::-1] reverses the list."
+                            }
+                        }
+                    },
+                    {
+                        template: (r) => {
+                            return {
+                                q: "Which library is primarily used for data manipulation in Python?",
+                                opts: ["Matplotlib", "Pandas", "Flask", "PyGame"],
+                                ans: 1,
+                                exp: "Pandas is the standard library for data structures and analysis (DataFrames)."
+                            }
+                        }
+                    },
+                    {
+                        template: (r) => {
+                             const a = r(2,5); const b = r(2,5);
+                             return {
+                                 q: `What is the output of: print(${a} ** ${b})`,
+                                 opts: [`${a*b}`, `${Math.pow(a,b)}`, `${a+b}`, "Error"],
+                                 ans: 1,
+                                 exp: `The ** operator is for exponentiation. ${a} to the power of ${b} is ${Math.pow(a,b)}.`
+                             }
+                        }
+                    }
+                ]
+            },
+            "Third Year": {
+                "Quantum Mechanics": [
+                    {
+                        template: (r) => {
+                            return {
+                                q: "The Heisenberg Uncertainty Principle states it is impossible to simultaneously measure:",
+                                opts: ["Position and Momentum", "Energy and Time", "Both A and B", "Mass and Velocity"],
+                                ans: 2,
+                                exp: "The principle applies to canonical conjugate pairs like Position-Momentum and Energy-Time."
+                            }
+                        }
+                    },
+                    {
+                         template: (r) => {
+                            return {
+                                q: "For a particle in a 1D box of length L, the energy levels are proportional to:",
+                                opts: ["n", "n²", "1/n", "sqrt(n)"],
+                                ans: 1,
+                                exp: "E_n = (n²h²)/(8mL²), so Energy is proportional to n²."
+                            }
+                        }
+                    },
+                    {
+                        template: (r) => {
+                            return {
+                                q: "The wave function Ψ must be ______ to be physically acceptable.",
+                                opts: ["Discontinuous", "Infinite", "Normalized", "Zero everywhere"],
+                                ans: 2,
+                                exp: "The wave function must be square-integrable and normalized (total probability = 1)."
+                            }
+                        }
+                    }
+                ],
+                "Statistical Physics": [
+                    {
+                        template: (r) => {
+                            return {
+                                q: "Which statistics apply to particles with half-integer spin (Fermions)?",
+                                opts: ["Maxwell-Boltzmann", "Bose-Einstein", "Fermi-Dirac", "Newtonian"],
+                                ans: 2,
+                                exp: "Fermions follow the Pauli Exclusion Principle and obey Fermi-Dirac statistics."
+                            }
+                        }
+                    },
+                    {
+                        template: (r) => {
+                            return {
+                                q: "Photons obey which type of statistics?",
+                                opts: ["Maxwell-Boltzmann", "Bose-Einstein", "Fermi-Dirac", "None"],
+                                ans: 1,
+                                exp: "Photons are bosons (integer spin) and obey Bose-Einstein statistics."
+                            }
+                        }
+                    }
+                ],
+                "Scientific Computing": [
+                     {
+                        template: (r) => {
+                            return {
+                                q: "Which method is commonly used for finding roots of non-linear equations?",
+                                opts: ["Simpson's Rule", "Newton-Raphson Method", "Euler's Method", "Trapezoidal Rule"],
+                                ans: 1,
+                                exp: "Newton-Raphson is an iterative method for finding roots. Simpson's and Trapezoidal are for integration."
+                            }
+                        }
+                    },
+                    {
+                        template: (r) => {
+                            return {
+                                q: "Euler's method is used for solving:",
+                                opts: ["Linear Equations", "Differential Equations", "Integral Equations", "Quadratic Equations"],
+                                ans: 1,
+                                exp: "Euler's method is a first-order numerical procedure for solving ordinary differential equations (ODEs)."
+                            }
+                        }
+                    }
+                ]
+            }
+        };
+
+        let currentQuiz = [];
+
+        function renderQuizHub() {
+            cleanup();
+            activeQuizYear = null;
+            activeQuizChapter = null;
+
+            app.innerHTML = `
+                <div class="fade-in max-w-4xl mx-auto">
+                    <button onclick="renderHome()" class="mb-6 text-gray-500 hover:text-indigo-600 font-medium flex items-center transition">
+                        <i class="fas fa-arrow-left mr-2"></i> Back to Hub
+                    </button>
+                    
+                    <div class="text-center mb-10">
+                        <h1 class="text-3xl md:text-4xl font-bold text-gray-800 mb-2">
+                            <span class="bg-clip-text text-transparent bg-gradient-to-r from-violet-600 to-indigo-600">Intelligent Quiz Generator</span>
+                        </h1>
+                        <p class="text-gray-500">Test your knowledge with dynamic questions.</p>
+                    </div>
+
+                    <!-- Step 1: Year Selection -->
+                    <div id="quiz-step-1">
+                        <h3 class="text-xl font-bold text-gray-700 mb-6 border-l-4 border-violet-500 pl-3">Select Year</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div onclick="selectQuizYear('First Year')" class="bg-white p-6 rounded-xl shadow-md border border-gray-100 hover:border-blue-400 hover:shadow-lg cursor-pointer transition group text-center">
+                                <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl text-blue-600 group-hover:scale-110 transition">1</div>
+                                <h4 class="font-bold text-gray-800">First Year</h4>
+                                <p class="text-xs text-gray-500 mt-2">Foundational Mechanics & Math</p>
+                            </div>
+                            <div onclick="selectQuizYear('Second Year')" class="bg-white p-6 rounded-xl shadow-md border border-gray-100 hover:border-green-400 hover:shadow-lg cursor-pointer transition group text-center">
+                                <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl text-green-600 group-hover:scale-110 transition">2</div>
+                                <h4 class="font-bold text-gray-800">Second Year</h4>
+                                <p class="text-xs text-gray-500 mt-2">Electromagnetism & Python</p>
+                            </div>
+                            <div onclick="selectQuizYear('Third Year')" class="bg-white p-6 rounded-xl shadow-md border border-gray-100 hover:border-purple-400 hover:shadow-lg cursor-pointer transition group text-center">
+                                <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl text-purple-600 group-hover:scale-110 transition">3</div>
+                                <h4 class="font-bold text-gray-800">Third Year</h4>
+                                <p class="text-xs text-gray-500 mt-2">Quantum & Scientific Comp.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Chapter Selection (Hidden initially) -->
+                    <div id="quiz-step-2" class="hidden mt-8">
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-xl font-bold text-gray-700 border-l-4 border-violet-500 pl-3">Select Chapter</h3>
+                            <button onclick="renderQuizHub()" class="text-xs text-gray-400 hover:text-gray-600">Change Year</button>
+                        </div>
+                        <div id="chapter-list" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <!-- Injected by JS -->
+                        </div>
+                    </div>
+
+                    <!-- Step 3: The Quiz (Hidden initially) -->
+                    <div id="quiz-step-3" class="hidden mt-8">
+                         <div class="bg-white rounded-2xl shadow-xl border border-gray-200 overflow-hidden">
+                            <div class="bg-violet-600 p-6 text-white flex justify-between items-center">
+                                <div>
+                                    <h2 id="quiz-title" class="text-2xl font-bold">Quiz</h2>
+                                    <p id="quiz-subtitle" class="text-violet-200 text-sm">5 Questions • Multiple Choice</p>
+                                </div>
+                                <i class="fas fa-clock text-3xl opacity-50"></i>
+                            </div>
+                            
+                            <div id="quiz-questions-container" class="p-6 md:p-8 space-y-8">
+                                <!-- Questions Go Here -->
+                            </div>
+
+                            <div class="bg-gray-50 p-6 border-t border-gray-100 flex flex-col sm:flex-row justify-center gap-4 text-center">
+                                <!-- UPDATED BUTTON: Calls generateQuiz again with active context -->
+                                <button onclick="generateQuiz(activeQuizYear, activeQuizChapter)" class="bg-violet-600 text-white border border-transparent px-6 py-2 rounded-full font-bold hover:bg-violet-700 transition shadow-lg flex items-center justify-center gap-2">
+                                    <i class="fas fa-sync-alt"></i> Generate New Questions
+                                </button>
+                                <button onclick="renderQuizHub()" class="bg-white text-gray-600 border border-gray-300 px-6 py-2 rounded-full font-bold hover:bg-gray-100 transition">
+                                    Select Different Topic
+                                </button>
+                            </div>
+                         </div>
+                    </div>
+                </div>
+            `;
+            window.scrollTo(0,0);
+        }
+
+        function selectQuizYear(year) {
+            document.getElementById('quiz-step-1').classList.add('hidden');
+            const step2 = document.getElementById('quiz-step-2');
+            step2.classList.remove('hidden');
+            step2.classList.add('fade-in');
+
+            const container = document.getElementById('chapter-list');
+            container.innerHTML = '';
+            const chapters = Object.keys(quizData[year]);
+            
+            chapters.forEach(chap => {
+                const btn = document.createElement('div');
+                btn.className = "bg-white p-4 rounded-lg shadow-sm border border-gray-200 hover:border-violet-500 hover:bg-violet-50 cursor-pointer transition flex items-center justify-between group";
+                btn.innerHTML = `
+                    <span class="font-semibold text-gray-700 group-hover:text-violet-700">${chap}</span>
+                    <i class="fas fa-chevron-right text-gray-300 group-hover:text-violet-500"></i>
+                `;
+                btn.onclick = () => generateQuiz(year, chap);
+                container.appendChild(btn);
+            });
+        }
+
+        // --- UPDATED GENERATE QUIZ FUNCTION ---
+        function generateQuiz(year, chapter) {
+            // Store active context so we can refresh easily
+            activeQuizYear = year;
+            activeQuizChapter = chapter;
+
+            // Handle UI Transitions
+            document.getElementById('quiz-step-2').classList.add('hidden');
+            document.getElementById('quiz-step-1').classList.add('hidden'); // Ensure step 1 is hidden if recalling
+            const step3 = document.getElementById('quiz-step-3');
+            step3.classList.remove('hidden');
+            
+            // Small visual refresh effect
+            step3.classList.remove('fade-in');
+            void step3.offsetWidth; // trigger reflow
+            step3.classList.add('fade-in');
+
+            document.getElementById('quiz-title').innerText = chapter;
+            document.getElementById('quiz-subtitle').innerText = `${year} • 5 Questions`;
+
+            const container = document.getElementById('quiz-questions-container');
+            container.innerHTML = '';
+
+            const templates = quizData[year][chapter];
+            // Random Number Helper
+            const r = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+
+            // --- SMART SHUFFLE ALGORITHM ---
+            // 1. Create a deck of indices [0, 1, 2...]
+            let indices = Array.from({ length: templates.length }, (_, i) => i);
+            
+            // 2. Shuffle indices (Fisher-Yates)
+            for (let i = indices.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [indices[i], indices[j]] = [indices[j], indices[i]];
+            }
+
+            // 3. Select 5 questions. If we have fewer templates than 5, we loop through the shuffled list again.
+            //    This ensures we see ALL unique questions before repeating any.
+            let selectedTemplates = [];
+            for (let i = 0; i < 5; i++) {
+                // Use modulo to wrap around if i >= indices.length
+                selectedTemplates.push(templates[indices[i % indices.length]]);
+            }
+
+            // Generate HTML
+            selectedTemplates.forEach((templateObj, i) => {
+                // Call the template function to generate unique numbers every time
+                const qData = templateObj.template(r);
+
+                const qDiv = document.createElement('div');
+                qDiv.className = "border-b border-gray-100 pb-8 last:border-0 last:pb-0";
+                
+                let optionsHtml = '';
+                qData.opts.forEach((opt, idx) => {
+                    optionsHtml += `
+                        <div onclick="checkAnswer(this, ${idx}, ${qData.ans}, 'exp-${i}')" 
+                             class="quiz-option cursor-pointer p-3 rounded-lg border border-gray-200 mb-2 flex items-center group">
+                            <div class="w-8 h-8 rounded-full bg-gray-100 text-gray-500 font-bold flex items-center justify-center mr-3 group-hover:bg-violet-100 group-hover:text-violet-600 text-sm">
+                                ${String.fromCharCode(65 + idx)}
+                            </div>
+                            <span class="text-gray-700 text-sm md:text-base">${opt}</span>
+                        </div>
+                    `;
+                });
+
+                qDiv.innerHTML = `
+                    <div class="mb-4">
+                        <span class="text-xs font-bold text-violet-500 uppercase tracking-wider mb-1 block">Question ${i + 1}</span>
+                        <h4 class="text-lg font-bold text-gray-800 leading-snug">${qData.q}</h4>
+                    </div>
+                    <div class="space-y-1 mb-4">
+                        ${optionsHtml}
+                    </div>
+                    <div id="exp-${i}" class="hidden bg-blue-50 border-l-4 border-blue-500 p-4 rounded-r-lg mt-4 text-sm text-blue-800">
+                        <p><span class="font-bold">Correct Answer:</span> ${qData.opts[qData.ans]}</p>
+                        <p class="mt-1"><span class="font-bold">Explanation:</span> ${qData.exp}</p>
+                    </div>
+                `;
+                container.appendChild(qDiv);
+            });
+            
+            // Scroll to top of quiz container smoothly
+            step3.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function checkAnswer(el, selectedIdx, correctIdx, expId) {
+            const parent = el.parentElement;
+            if(parent.getAttribute('data-answered') === 'true') return;
+            parent.setAttribute('data-answered', 'true');
+
+            const options = parent.children;
+            
+            if(selectedIdx === correctIdx) {
+                el.classList.add('correct');
+                confetti({
+                    particleCount: 50,
+                    spread: 60,
+                    origin: { y: 0.7 },
+                    colors: ['#22c55e', '#ffffff']
+                });
+            } else {
+                el.classList.add('wrong');
+                options[correctIdx].classList.add('correct');
+            }
+
+            const expBox = document.getElementById(expId);
+            expBox.classList.remove('hidden');
+            expBox.classList.add('fade-in');
+        }
+
+        // --- TREE DIAGRAM PAGE ---
+        function renderAfterBsc() {
+            cleanup();
+            function buildTreeHTML(node) {
+                let html = `<li>
+                    <a href="javascript:void(0)" onclick="showNodeDetail('${node.title}', '${node.detail || ''}')" class="tree-node ${node.class || ''}">
+                        ${node.title}
+                    </a>`;
+                
+                if (node.children && node.children.length > 0) {
+                    html += `<ul>`;
+                    node.children.forEach(child => {
+                        html += buildTreeHTML(child);
+                    });
+                    html += `</ul>`;
+                }
+                
+                html += `</li>`;
+                return html;
+            }
+
+            const treeHtml = buildTreeHTML(bscTreeData);
+
+            app.innerHTML = `
+                <div class="fade-in max-w-7xl mx-auto">
+                    <!-- Header -->
+                    <div class="flex flex-col md:flex-row justify-between items-center mb-8">
+                        <div>
+                            <button onclick="renderHome()" class="text-gray-500 hover:text-indigo-600 font-medium mb-2 flex items-center transition">
+                                <i class="fas fa-arrow-left mr-2"></i> Back to Hub
+                            </button>
+                            <h1 class="text-3xl font-bold text-gray-800">Future Pathways <i class="fas fa-map-signs text-yellow-500 ml-2"></i></h1>
+                            <p class="text-gray-500">Interactive Map of Opportunities after BSc</p>
+                        </div>
+                    </div>
+
+                    <!-- Alert/Info Box -->
+                    <div class="bg-blue-50 border-l-4 border-blue-500 p-4 mb-8 rounded shadow-sm">
+                        <div class="flex">
+                            <div class="flex-shrink-0">
+                                <i class="fas fa-info-circle text-blue-500"></i>
+                            </div>
+                            <div class="ml-3">
+                                <p class="text-sm text-blue-700">
+                                    Click on any box in the tree below to see more details about that career path!
+                                    <br><span class="text-xs text-blue-500 hidden md:inline">* Best viewed on Desktop/Laptop for full tree view.</span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- The Tree -->
+                    <div class="bg-white rounded-3xl shadow-xl overflow-hidden min-h-[500px] border border-gray-100 relative">
+                        <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500"></div>
+                        
+                        <div class="tree-container">
+                            <div class="tree">
+                                <ul>
+                                    ${treeHtml}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Detail Modal (Simple Overlay) -->
+                    <div id="tree-detail-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-[60] flex items-center justify-center p-4">
+                        <div class="bg-white rounded-2xl shadow-2xl p-6 max-w-md w-full transform transition-all scale-100">
+                            <div class="text-center mb-4">
+                                <div class="w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl text-indigo-600">
+                                    <i class="fas fa-lightbulb"></i>
+                                </div>
+                                <h3 id="modal-title" class="text-2xl font-bold text-gray-800">Title</h3>
+                            </div>
+                            <p id="modal-desc" class="text-gray-600 text-center mb-6 leading-relaxed">Description goes here.</p>
+                            <button onclick="document.getElementById('tree-detail-modal').classList.add('hidden')" class="w-full bg-indigo-600 text-white py-2 rounded-lg font-bold hover:bg-indigo-700 transition">Close</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            window.scrollTo(0,0);
+        }
+
+        function showNodeDetail(title, detail) {
+            if(!detail) return; 
+            document.getElementById('modal-title').innerText = title;
+            document.getElementById('modal-desc').innerText = detail;
+            document.getElementById('tree-detail-modal').classList.remove('hidden');
+        }
+
+        // --- DIVINE FLUTE (Three.js Integration) ---
+        function renderFlute() {
+            cleanup();
+            app.classList.remove('container', 'mx-auto', 'px-4', 'py-8');
+            app.classList.add('p-0', 'm-0', 'w-full', 'max-w-none');
+            document.body.style.backgroundColor = '#050510';
+            document.body.style.overflow = 'hidden'; 
+            footer.style.display = 'none'; 
+
+            app.innerHTML = `
+                <div id="flute-container" class="relative w-full h-[calc(100vh-60px)] overflow-hidden bg-[#050510]">
+                    <div id="loading" class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-teal-400 font-light text-xl tracking-widest transition-opacity duration-1000 z-20">Summoning the Divine...</div>
+
+                    <div id="ui-layer" class="absolute top-8 left-8 text-white z-10 pointer-events-none">
+                        <h1 class="text-4xl md:text-6xl font-serif text-teal-200" style="text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);">Venu</h1>
+                        <p class="text-sm md:text-lg text-teal-100 opacity-80 mt-2">The Divine Instrument</p>
+                    </div>
+
+                    <div id="three-canvas" class="w-full h-full block"></div>
+                    
+                    <button onclick="renderHome()" class="absolute bottom-8 right-8 bg-white/10 hover:bg-white/20 text-white px-6 py-2 rounded-full border border-white/30 backdrop-blur z-20 transition">
+                         Exit <i class="fas fa-sign-out-alt ml-2"></i>
+                    </button>
+                </div>
+            `;
+            setTimeout(initThreeJS, 100);
+        }
+
+        function initThreeJS() {
+            const container = document.getElementById('three-canvas');
+            if(!container) return;
+
+            const scene = new THREE.Scene();
+            scene.fog = new THREE.FogExp2(0x050510, 0.02);
+
+            const camera = new THREE.PerspectiveCamera(45, container.offsetWidth / container.offsetHeight, 0.1, 1000);
+            camera.position.set(0, 0, 18);
+            camera.lookAt(0, 0, 0);
+
+            const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            renderer.setSize(container.offsetWidth, container.offsetHeight);
+            renderer.setPixelRatio(window.devicePixelRatio);
+            renderer.toneMapping = THREE.ReinhardToneMapping;
+            container.appendChild(renderer.domElement);
+
+            function createWoodTexture() {
+                const canvas = document.createElement('canvas');
+                canvas.width = 1024;
+                canvas.height = 1024;
+                const ctx = canvas.getContext('2d');
+                ctx.fillStyle = '#C69C6D'; 
+                ctx.fillRect(0, 0, 1024, 1024);
+                for (let i = 0; i < 400; i++) {
+                    ctx.fillStyle = `rgba(101, 67, 33, ${Math.random() * 0.1})`;
+                    const x = Math.random() * 1024;
+                    const width = Math.random() * 5 + 1;
+                    ctx.fillRect(x, 0, width, 1024);
+                }
+                const texture = new THREE.CanvasTexture(canvas);
+                texture.wrapS = THREE.RepeatWrapping;
+                texture.wrapT = THREE.RepeatWrapping;
+                return texture;
+            }
+
+            function createFeatherTexture() {
+                const canvas = document.createElement('canvas');
+                canvas.width = 512;
+                canvas.height = 512;
+                const ctx = canvas.getContext('2d');
+                ctx.clearRect(0,0,512,512);
+                const grad = ctx.createRadialGradient(256, 256, 10, 256, 256, 200);
+                grad.addColorStop(0, '#000080');
+                grad.addColorStop(0.2, '#00CED1');
+                grad.addColorStop(0.4, '#B8860B');
+                grad.addColorStop(0.6, '#228B22');
+                grad.addColorStop(1, 'rgba(34, 139, 34, 0)');
+                ctx.fillStyle = grad;
+                ctx.beginPath();
+                ctx.ellipse(256, 256, 100, 180, 0, 0, Math.PI * 2);
+                ctx.fill();
+                const texture = new THREE.CanvasTexture(canvas);
+                return texture;
+            }
+
+            const woodTexture = createWoodTexture();
+            const featherTexture = createFeatherTexture();
+
+            const fluteGroup = new THREE.Group();
+            scene.add(fluteGroup);
+
+            const geometryBody = new THREE.CylinderGeometry(0.6, 0.6, 14, 64);
+            const materialBody = new THREE.MeshStandardMaterial({ 
+                map: woodTexture, roughness: 0.4, metalness: 0.1, color: 0xffeebb 
+            });
+            const fluteBody = new THREE.Mesh(geometryBody, materialBody);
+            fluteBody.rotation.z = Math.PI / 2;
+            fluteGroup.add(fluteBody);
+
+            const goldMaterial = new THREE.MeshStandardMaterial({
+                color: 0xFFD700, metalness: 1.0, roughness: 0.2, emissive: 0xaa6600, emissiveIntensity: 0.2
+            });
+
+            [-6.5, -4, 4, 6.5].forEach(x => {
+                const ring = new THREE.Mesh(new THREE.TorusGeometry(0.62, 0.08, 16, 64), goldMaterial);
+                ring.rotation.y = Math.PI / 2;
+                ring.position.x = x;
+                fluteGroup.add(ring);
+            });
+
+            const holeMaterial = new THREE.MeshBasicMaterial({ color: 0x1a1a00 });
+            const holeGeo = new THREE.CylinderGeometry(0.2, 0.2, 0.2, 32);
+            const blowHole = new THREE.Mesh(holeGeo, holeMaterial);
+            blowHole.position.set(-5.5, 0.5, 0);
+            blowHole.rotation.x = Math.PI / 3;
+            fluteGroup.add(blowHole);
+
+            for (let i = 0; i < 6; i++) {
+                const fingerHole = new THREE.Mesh(holeGeo, holeMaterial);
+                fingerHole.position.set(0 + (i * 1.0), 0.55, 0);
+                fluteGroup.add(fingerHole);
+            }
+
+            const feather = new THREE.Mesh(
+                new THREE.PlaneGeometry(3, 5), 
+                new THREE.MeshBasicMaterial({ 
+                    map: featherTexture, transparent: true, side: THREE.DoubleSide, 
+                    blending: THREE.AdditiveBlending, depthWrite: false
+                })
+            );
+            feather.position.set(-6.5, 1.5, -0.5);
+            feather.rotation.z = -Math.PI / 4;
+            feather.rotation.y = Math.PI / 6;
+            fluteGroup.add(feather);
+
+            const tasselGroup = new THREE.Group();
+            tasselGroup.position.set(-6.5, -0.6, 0);
+            fluteGroup.add(tasselGroup);
+            const string = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, 2, 8), new THREE.MeshBasicMaterial({ color: 0xcc0000 }));
+            string.position.y = -1;
+            tasselGroup.add(string);
+            const bead = new THREE.Mesh(new THREE.SphereGeometry(0.3, 16, 16), goldMaterial);
+            bead.position.y = -2;
+            tasselGroup.add(bead);
+
+            const particlesGeometry = new THREE.BufferGeometry();
+            const particlesCount = 1000;
+            const posArray = new Float32Array(particlesCount * 3);
+            for(let i = 0; i < particlesCount * 3; i++) {
+                posArray[i] = (Math.random() - 0.5) * 30;
+            }
+            particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+
+            const spriteCanvas = document.createElement('canvas');
+            spriteCanvas.width = 64; spriteCanvas.height = 64;
+            const sCtx = spriteCanvas.getContext('2d');
+            const sGrad = sCtx.createRadialGradient(32,32,0,32,32,32);
+            sGrad.addColorStop(0, 'rgba(255, 215, 0, 1)');
+            sGrad.addColorStop(1, 'rgba(0,0,0,0)');
+            sCtx.fillStyle = sGrad;
+            sCtx.fillRect(0,0,64,64);
+            const spriteTexture = new THREE.CanvasTexture(spriteCanvas);
+
+            const particlesMesh = new THREE.Points(particlesGeometry, new THREE.PointsMaterial({
+                size: 0.3, map: spriteTexture, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false, color: 0xffaa00
+            }));
+            scene.add(particlesMesh);
+
+            scene.add(new THREE.AmbientLight(0xffffff, 0.2));
+            const pointLight = new THREE.PointLight(0xffaa00, 1.5, 50);
+            pointLight.position.set(5, 5, 5);
+            scene.add(pointLight);
+            const blueLight = new THREE.PointLight(0x0044ff, 2, 50);
+            blueLight.position.set(-10, -5, 5);
+            scene.add(blueLight);
+            const topLight = new THREE.DirectionalLight(0xffffff, 1);
+            topLight.position.set(0, 10, 0);
+            scene.add(topLight);
+
+            const renderScene = new THREE.RenderPass(scene, camera);
+            const bloomPass = new THREE.UnrealBloomPass(new THREE.Vector2(container.offsetWidth, container.offsetHeight), 1.5, 0.4, 0.85);
+            bloomPass.strength = 1.2;
+            bloomPass.radius = 0.5;
+            bloomPass.threshold = 0.2;
+            
+            const composer = new THREE.EffectComposer(renderer);
+            composer.addPass(renderScene);
+            composer.addPass(bloomPass);
+
+            fluteGroup.rotation.x = 0.5;
+            fluteGroup.rotation.y = 2.5;
+
+            setTimeout(() => {
+                const loading = document.getElementById('loading');
+                if(loading) {
+                    loading.style.opacity = 0;
+                    setTimeout(() => loading.remove(), 1000);
+                }
+            }, 1000);
+
+            const clock = new THREE.Clock();
+
+            function animate() {
+                fluteAnimationId = requestAnimationFrame(animate);
+                const time = clock.getElapsedTime();
+
+                fluteGroup.position.y = Math.sin(time * 0.5) * 0.5;
+                fluteGroup.rotation.z = Math.sin(time * 0.2) * 0.1;
+                fluteGroup.rotation.y += 0.005;
+                tasselGroup.rotation.z = Math.sin(time * 2) * 0.1 + (Math.PI/2);
+                particlesMesh.rotation.y = time * 0.05;
+                particlesMesh.rotation.x = time * 0.02;
+
+                composer.render();
+            }
+
+            fluteResizeHandler = () => {
+                const w = container.offsetWidth;
+                const h = container.offsetHeight;
+                camera.aspect = w / h;
+                camera.updateProjectionMatrix();
+                renderer.setSize(w, h);
+                composer.setSize(w, h);
+            };
+            window.addEventListener('resize', fluteResizeHandler);
+
+            animate();
+        }
+
+        // --- CABIN (PAINT APP) LOGIC ---
+        function renderCabin() {
+            cleanup();
+            app.innerHTML = `
+                <div class="fade-in max-w-6xl mx-auto">
+                    <!-- Header -->
+                    <div class="flex flex-col md:flex-row justify-between items-center mb-6">
+                        <div>
+                            <button onclick="renderHome()" class="text-gray-500 hover:text-indigo-600 font-medium mb-2 flex items-center transition">
+                                <i class="fas fa-arrow-left mr-2"></i> Back to Hub
+                            </button>
+                            <h1 class="text-3xl font-bold text-gray-800">Nandhini's Cabin <i class="fas fa-palette text-pink-500 ml-2"></i></h1>
+                            <p class="text-gray-500">Your creative space. Draw mountains, space, or anything you imagine!</p>
+                        </div>
+                        <div class="mt-4 md:mt-0 flex space-x-3">
+                            <button onclick="clearCanvas()" class="bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-lg shadow-sm hover:bg-gray-50 transition font-medium">
+                                <i class="fas fa-trash-alt mr-2"></i> Clear
+                            </button>
+                            <button onclick="downloadCanvas()" class="bg-indigo-600 text-white px-4 py-2 rounded-lg shadow hover:bg-indigo-700 transition font-medium">
+                                <i class="fas fa-download mr-2"></i> Download Art
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Workspace -->
+                    <div class="flex flex-col lg:flex-row gap-6">
+                        
+                        <!-- Toolbar -->
+                        <div class="w-full lg:w-64 bg-white p-6 rounded-2xl shadow-lg border border-gray-100 h-fit">
+                            
+                            <!-- Tools -->
+                            <div class="mb-6">
+                                <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Tools</h3>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <button id="tool-brush" onclick="setTool('brush')" class="tool-btn active flex flex-col items-center justify-center p-3 rounded-xl border border-gray-200 hover:bg-gray-50">
+                                        <i class="fas fa-pencil-alt text-lg mb-1"></i>
+                                        <span class="text-xs font-medium">Brush</span>
+                                    </button>
+                                    <button id="tool-eraser" onclick="setTool('eraser')" class="tool-btn flex flex-col items-center justify-center p-3 rounded-xl border border-gray-200 hover:bg-gray-50">
+                                        <i class="fas fa-eraser text-lg mb-1"></i>
+                                        <span class="text-xs font-medium">Eraser</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Brush Size -->
+                            <div class="mb-6">
+                                <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3 flex justify-between">
+                                    Size <span id="size-display" class="text-gray-800">5px</span>
+                                </h3>
+                                <input type="range" min="1" max="50" value="5" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer" oninput="setSize(this.value)">
+                            </div>
+
+                            <!-- Colors -->
+                            <div>
+                                <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Palette</h3>
+                                <div class="flex flex-wrap gap-3 mb-4">
+                                    <div onclick="setColor('#000000')" class="color-btn bg-black active" style="background-color: #000000;"></div>
+                                    <div onclick="setColor('#ef4444')" class="color-btn" style="background-color: #ef4444;"></div>
+                                    <div onclick="setColor('#f97316')" class="color-btn" style="background-color: #f97316;"></div>
+                                    <div onclick="setColor('#eab308')" class="color-btn" style="background-color: #eab308;"></div>
+                                    <div onclick="setColor('#22c55e')" class="color-btn" style="background-color: #22c55e;"></div>
+                                    <div onclick="setColor('#3b82f6')" class="color-btn" style="background-color: #3b82f6;"></div>
+                                    <div onclick="setColor('#a855f7')" class="color-btn" style="background-color: #a855f7;"></div>
+                                    <div onclick="setColor('#ec4899')" class="color-btn" style="background-color: #ec4899;"></div>
+                                </div>
+                                
+                                <label class="flex items-center space-x-2 cursor-pointer bg-gray-50 p-2 rounded-lg border border-gray-200 hover:bg-gray-100 transition">
+                                    <input type="color" id="custom-color-picker" onchange="setColor(this.value)" class="w-8 h-8 rounded cursor-pointer border-0 bg-transparent">
+                                    <span class="text-sm font-medium text-gray-600">Custom Color</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Canvas Area -->
+                        <div class="flex-grow bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden relative" style="min-height: 500px;">
+                            <canvas id="paintCanvas" class="canvas-container w-full h-full block"></canvas>
+                            <div class="absolute bottom-4 right-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-xs text-gray-500 shadow-sm border border-gray-200 pointer-events-none">
+                                <i class="fas fa-save mr-1 text-green-500"></i> Auto-saved
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            window.scrollTo(0,0);
+            
+            setTimeout(initPaintApp, 100);
+        }
+
+        let canvas, ctx;
+        let isDrawing = false;
+        let lastX = 0;
+        let lastY = 0;
+        let currentTool = 'brush';
+        let currentColor = '#000000';
+        let currentSize = 5;
+
+        function initPaintApp() {
+            canvas = document.getElementById('paintCanvas');
+            if(!canvas) return;
+
+            const container = canvas.parentElement;
+            canvas.width = container.offsetWidth;
+            canvas.height = container.offsetHeight;
+
+            ctx = canvas.getContext('2d');
+            ctx.lineJoin = 'round';
+            ctx.lineCap = 'round';
+
+            loadCanvas();
+
+            canvas.addEventListener('mousedown', startDrawing);
+            canvas.addEventListener('mousemove', draw);
+            canvas.addEventListener('mouseup', stopDrawing);
+            canvas.addEventListener('mouseout', stopDrawing);
+
+            canvas.addEventListener('touchstart', handleTouchStart, {passive: false});
+            canvas.addEventListener('touchmove', handleTouchMove, {passive: false});
+            canvas.addEventListener('touchend', stopDrawing);
+        }
+
+        function startDrawing(e) {
+            isDrawing = true;
+            [lastX, lastY] = [e.offsetX, e.offsetY];
+        }
+
+        function draw(e) {
+            if (!isDrawing) return;
+            ctx.beginPath();
+            ctx.moveTo(lastX, lastY);
+            ctx.lineTo(e.offsetX, e.offsetY);
+            
+            ctx.lineWidth = currentSize;
+            if(currentTool === 'eraser') {
+                ctx.strokeStyle = '#ffffff'; 
+            } else {
+                ctx.strokeStyle = currentColor;
+            }
+            
+            ctx.stroke();
+            [lastX, lastY] = [e.offsetX, e.offsetY];
+        }
+
+        function stopDrawing() {
+            if(isDrawing) {
+                isDrawing = false;
+                saveCanvas(); 
+            }
+        }
+
+        function getTouchPos(canvasDom, touchEvent) {
+            var rect = canvasDom.getBoundingClientRect();
+            return {
+                x: touchEvent.touches[0].clientX - rect.left,
+                y: touchEvent.touches[0].clientY - rect.top
+            };
+        }
+
+        function handleTouchStart(e) {
+            e.preventDefault();
+            var pos = getTouchPos(canvas, e);
+            lastX = pos.x;
+            lastY = pos.y;
+            isDrawing = true;
+        }
+
+        function handleTouchMove(e) {
+            e.preventDefault();
+            if (!isDrawing) return;
+            var pos = getTouchPos(canvas, e);
+            
+            ctx.beginPath();
+            ctx.moveTo(lastX, lastY);
+            ctx.lineTo(pos.x, pos.y);
+            
+            ctx.lineWidth = currentSize;
+            if(currentTool === 'eraser') {
+                ctx.strokeStyle = '#ffffff';
+            } else {
+                ctx.strokeStyle = currentColor;
+            }
+            
+            ctx.stroke();
+            lastX = pos.x;
+            lastY = pos.y;
+        }
+
+        function setTool(tool) {
+            currentTool = tool;
+            document.querySelectorAll('.tool-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(`tool-${tool}`).classList.add('active');
+        }
+
+        function setColor(color) {
+            currentColor = color;
+            setTool('brush'); 
+            document.querySelectorAll('.color-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if(rgbToHex(btn.style.backgroundColor) === color.toLowerCase() || btn.style.backgroundColor === color) {
+                    btn.classList.add('active');
+                }
+            });
+        }
+        
+        function rgbToHex(rgb) {
+            if (!rgb) return '';
+            if (rgb.startsWith('#')) return rgb;
+            let sep = rgb.indexOf(",") > -1 ? "," : " ";
+            rgb = rgb.substr(4).split(")")[0].split(sep);
+            let r = (+rgb[0]).toString(16),
+                g = (+rgb[1]).toString(16),
+                b = (+rgb[2]).toString(16);
+            if (r.length == 1) r = "0" + r;
+            if (g.length == 1) g = "0" + g;
+            if (b.length == 1) b = "0" + b;
+            return "#" + r + g + b;
+        }
+
+        function setSize(size) {
+            currentSize = size;
+            document.getElementById('size-display').innerText = size + 'px';
+        }
+
+        function clearCanvas() {
+            if(confirm('Are you sure you want to clear your painting?')) {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                localStorage.removeItem('nandhini_painting');
+            }
+        }
+
+        function downloadCanvas() {
+            const link = document.createElement('a');
+            link.download = 'nandhini-cabin-art.png';
+            link.href = canvas.toDataURL();
+            link.click();
+            fireConfetti(); 
+        }
+
+        function saveCanvas() {
+            localStorage.setItem('nandhini_painting', canvas.toDataURL());
+        }
+
+        function loadCanvas() {
+            const dataURL = localStorage.getItem('nandhini_painting');
+            if(dataURL) {
+                const img = new Image();
+                img.onload = function() {
+                    ctx.drawImage(img, 0, 0);
+                };
+                img.src = dataURL;
+            }
+        }
+
+        function renderYear(year) {
+            cleanup();
+            const data = curriculum[year];
+            let subjectsHtml = '';
+
+            data.subjects.forEach(subject => {
+                let chaptersHtml = '';
+                subject.chapters.forEach((chapter, index) => {
+                    const ytQuery = encodeURIComponent(`${chapter.title} ${subject.name} undergraduate lecture`);
+                    const wikiQuery = encodeURIComponent(chapter.title);
+                    const gptQuery = encodeURIComponent(`Explain the chapter "${chapter.title}" from the subject "${subject.name}" in detail for a BSc Physical Science student. Please include key concepts, formulas, and real-world applications.`);
+
+                    chaptersHtml += `
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between p-4 border-l-4 border-gray-200 hover:border-indigo-500 bg-white hover:bg-indigo-50/30 mb-3 rounded-r-lg transition-all duration-300 group shadow-sm hover:shadow-md">
+                            <div class="mb-3 sm:mb-0">
+                                <h4 class="font-bold text-gray-800 text-base group-hover:text-indigo-700 transition flex items-center">
+                                    <span class="bg-gray-100 text-gray-500 text-xs py-0.5 px-2 rounded mr-2">Ch.${index + 1}</span>
+                                    ${chapter.title}
+                                </h4>
+                                <p class="text-sm text-gray-500 mt-1 pl-0 sm:pl-10">${chapter.desc}</p>
+                            </div>
+                            
+                            <div class="flex items-center space-x-3 pl-0 sm:pl-4 mt-2 sm:mt-0">
+                                <a href="https://www.youtube.com/results?search_query=${ytQuery}" target="_blank" 
+                                   class="flex items-center justify-center w-10 h-10 rounded-full bg-red-100 text-red-600 hover:bg-red-600 hover:text-white transition transform hover:scale-110 active:scale-95 shadow-sm border border-red-200"
+                                   title="Watch on YouTube">
+                                    <i class="fab fa-youtube text-lg"></i>
+                                </a>
+                                <a href="https://en.wikipedia.org/wiki/Special:Search?search=${wikiQuery}" target="_blank"
+                                   class="flex items-center justify-center w-10 h-10 rounded-full bg-slate-100 text-slate-600 hover:bg-slate-700 hover:text-white transition transform hover:scale-110 active:scale-95 shadow-sm border border-slate-200"
+                                   title="Read on Wikipedia">
+                                    <i class="fab fa-wikipedia-w text-lg"></i>
+                                </a>
+                                <a href="https://chatgpt.com/?q=${gptQuery}" target="_blank"
+                                   class="flex items-center justify-center w-10 h-10 rounded-full bg-emerald-100 text-emerald-600 hover:bg-emerald-600 hover:text-white transition transform hover:scale-110 active:scale-95 shadow-sm border border-emerald-200"
+                                   title="Ask AI">
+                                    <i class="fas fa-robot text-lg"></i>
+                                </a>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                subjectsHtml += `
+                    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition">
+                        <div class="bg-gray-50 p-4 border-b border-gray-100 flex items-center justify-between">
+                            <h3 class="text-lg font-bold text-gray-800"><i class="fas fa-book mr-2 text-indigo-400"></i>${subject.name}</h3>
+                            <i class="fas fa-chevron-down text-gray-300"></i>
+                        </div>
+                        <div class="p-2 bg-gray-50/50">
+                            ${chaptersHtml}
+                        </div>
+                    </div>
+                `;
+            });
+
+            app.innerHTML = `
+                <div class="fade-in max-w-5xl mx-auto">
+                    <button onclick="renderHome()" class="mb-6 bg-white px-4 py-2 rounded-full shadow text-indigo-600 font-semibold hover:bg-gray-50 flex items-center w-max transition">
+                        <i class="fas fa-arrow-left mr-2"></i> Back to Home
+                    </button>
+                    
+                    <div class="bg-gradient-to-r from-gray-900 to-gray-800 text-white rounded-3xl p-8 mb-10 shadow-xl relative overflow-hidden">
+                         <div class="absolute top-0 right-0 w-64 h-64 bg-white opacity-5 rounded-full -mr-10 -mt-10"></div>
+                         <div class="relative z-10 flex flex-col md:flex-row items-center justify-between">
+                            <div>
+                                <h1 class="text-4xl font-bold mb-2">${data.title}</h1>
+                                <p class="text-xl text-gray-300">${data.description}</p>
+                            </div>
+                            <div class="mt-6 md:mt-0 ${data.color} w-20 h-20 rounded-full flex items-center justify-center shadow-lg animate-bounce">
+                                <i class="fas ${data.icon} text-3xl text-gray-800"></i>
+                            </div>
+                         </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        ${subjectsHtml}
+                    </div>
+                </div>
+            `;
+            window.scrollTo(0,0);
+        }
+
+        function renderCareerPage(careerKey) {
+            cleanup();
+            const data = careerPaths[careerKey];
+            
+            let stepsHtml = '';
+            const themeClass = data.theme === 'pink' ? 'pink' : data.theme === 'indigo' ? 'indigo' : 'emerald';
+            
+            data.steps.forEach((step, index) => {
+                const isLast = index === data.steps.length - 1;
+                stepsHtml += `
+                    <div class="flex items-start mb-8 relative">
+                        ${!isLast ? `<div class="absolute left-6 top-12 bottom-[-32px] w-0.5 bg-gray-200"></div>` : ''}
+                        
+                        <div class="bg-${themeClass}-100 z-10 w-12 h-12 rounded-full flex-shrink-0 flex items-center justify-center mr-6 border-4 border-white shadow-md">
+                            <i class="fas ${step.icon} text-${themeClass}-600"></i>
+                        </div>
+                        <div class="bg-white p-6 rounded-xl shadow-sm flex-grow border border-gray-100 hover:border-${themeClass}-300 hover:shadow-md transition">
+                            <h3 class="text-xl font-bold text-gray-800 mb-1">${step.skill}</h3>
+                            <p class="text-gray-600 text-sm">${step.desc}</p>
+                        </div>
+                    </div>
+                `;
+            });
+
+            let salaryHtml = '';
+            if (data.salary) {
+                salaryHtml = `
+                    <div class="bg-white rounded-2xl shadow-lg p-6 mb-8 border border-gray-100">
+                        <h3 class="text-lg font-bold text-gray-800 mb-6 flex items-center">
+                            <i class="fas fa-wallet text-green-500 mr-2"></i> Salary Insights (India)
+                        </h3>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div class="bg-slate-50 p-4 rounded-xl text-center border border-slate-100">
+                                <p class="text-xs text-gray-500 font-bold uppercase tracking-wider mb-1">Fresher</p>
+                                <p class="text-xl font-bold text-slate-700">${data.salary.fresher}</p>
+                            </div>
+                            <div class="bg-indigo-50 p-4 rounded-xl text-center border border-indigo-100">
+                                <p class="text-xs text-indigo-500 font-bold uppercase tracking-wider mb-1">Mid-Level</p>
+                                <p class="text-xl font-bold text-indigo-700">${data.salary.mid}</p>
+                            </div>
+                            <div class="bg-pink-50 p-4 rounded-xl text-center border border-pink-100">
+                                <p class="text-xs text-pink-500 font-bold uppercase tracking-wider mb-1">Expert</p>
+                                <p class="text-xl font-bold text-pink-700">${data.salary.senior}</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            let imagesHtml = '';
+            if (data.images && data.images.length > 0) {
+                const imgGrid = data.images.map(url => `
+                    <div class="rounded-xl overflow-hidden shadow-md h-32 relative group cursor-pointer">
+                        <img src="${url}" class="w-full h-full object-cover gallery-img" alt="Gallery">
+                    </div>
+                `).join('');
+                
+                imagesHtml = `
+                    <div class="mb-10">
+                        <h3 class="text-xl font-bold text-gray-800 mb-4">A Day in the Life</h3>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                            ${imgGrid}
+                        </div>
+                    </div>
+                `;
+            }
+
+            app.innerHTML = `
+                <div class="fade-in max-w-4xl mx-auto">
+                    <button onclick="renderHome()" class="mb-6 bg-white px-4 py-2 rounded-full shadow text-indigo-600 font-semibold hover:bg-gray-50 flex items-center w-max">
+                        <i class="fas fa-arrow-left mr-2"></i> Back to Home
+                    </button>
+
+                    <div class="bg-gradient-to-br ${data.gradient} rounded-3xl p-8 md:p-12 text-white shadow-2xl mb-10 relative overflow-hidden">
+                        <div class="absolute top-0 right-0 w-64 h-64 ${data.blobColor} rounded-full filter blur-3xl opacity-20 -mr-16 -mt-16"></div>
+                        
+                        <div class="relative z-10">
+                            <div class="inline-block bg-white/20 text-xs font-bold px-3 py-1 rounded-full mb-4 uppercase tracking-wider">CAREER PATH</div>
+                            <h1 class="text-4xl md:text-5xl font-bold mb-4">${data.title}</h1>
+                            <p class="text-xl text-gray-100 leading-relaxed max-w-2xl">${data.intro}</p>
+                        </div>
+                    </div>
+
+                    <div class="px-2 md:px-4">
+                        ${imagesHtml}
+
+                        <div class="flex flex-col md:flex-row gap-8">
+                            <div class="md:w-2/3">
+                                <h2 class="text-2xl font-bold text-gray-800 mb-6">Step-by-Step Roadmap</h2>
+                                ${stepsHtml}
+                            </div>
+                            <div class="md:w-1/3">
+                                ${salaryHtml}
+                                <div class="bg-${themeClass}-50 border border-${themeClass}-100 p-6 rounded-2xl sticky top-24">
+                                    <h3 class="font-bold text-${themeClass}-900 text-lg mb-2">Why this path?</h3>
+                                    <p class="text-${themeClass}-700 text-sm leading-relaxed">${data.why}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            window.scrollTo(0,0);
+        }
+
+        function scrollToSection(id) {
+            const el = document.getElementById(id);
+            if(el) {
+                el.scrollIntoView({behavior: 'smooth'});
+            } else {
+                renderHome();
+                setTimeout(() => {
+                    document.getElementById(id).scrollIntoView({behavior: 'smooth'});
+                }, 100);
+            }
+        }
+
+        renderHome();
+    </script>
+</body>
+</html>
